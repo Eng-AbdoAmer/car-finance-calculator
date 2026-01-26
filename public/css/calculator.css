@@ -1,0 +1,190 @@
+/* ملف calculator.css معدل ليتناسب مع التصميم المعطى */
+
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --light-color: #ecf0f1;
+    --dark-color: #2c3e50;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --info-color: #3498db;
+}
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Tajawal', sans-serif;
+    padding-top: 20px;
+    padding-bottom: 50px;
+}
+
+.calculator-card {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.1);
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 20px;
+}
+
+.header h1 {
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 8px;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 12px 15px;
+    border: 2px solid #e1e8ed;
+    transition: all 0.3s;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+.btn-calculate {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 10px;
+    width: 100%;
+    transition: all 0.3s;
+    margin-top: 20px;
+}
+
+.btn-calculate:hover {
+    background: linear-gradient(135deg, #2980b9, #1c5a7a);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    color: white;
+}
+
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+.form-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+}
+
+.section-title {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+}
+
+/* تنسيقات صفحة النتائج */
+.result-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.1);
+    padding: 30px;
+}
+
+.summary-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.summary-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.summary-label {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.table-custom {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.table-custom thead th {
+    background: #2c3e50;
+    color: white;
+    border: none;
+    padding: 15px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.table-custom tbody td {
+    padding: 12px 15px;
+    vertical-align: middle;
+    font-size: 13px;
+}
+
+.section-title {
+    color: #2c3e50;
+    font-weight: 700;
+    margin: 30px 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+}
+
+/* الطباعة */
+@media print {
+    .no-print {
+        display: none;
+    }
+    body {
+        background: white;
+        padding: 0;
+    }
+    .result-container {
+        box-shadow: none;
+        padding: 0;
+    }
+}
+
+/* تنسيقات إضافية للصفحة الرئيسية */
+.calculator-container {
+    max-width: 800px;
+    margin: 50px auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.1);
+    padding: 30px;
+}
+
+@media (max-width: 768px) {
+    .calculator-container {
+        margin: 20px;
+        padding: 20px;
+    }
+}
