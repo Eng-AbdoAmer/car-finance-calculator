@@ -64,17 +64,17 @@
                     </li>
                 @endif
 
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link" href="#features">
                         <i class="fas fa-star me-1"></i>المميزات
                     </a>
-                </li>
+                </li> --}}
 
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link" href="#how-it-works">
                         <i class="fas fa-play-circle me-1"></i>كيف يعمل
                     </a>
-                </li>
+                </li> --}}
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('contact') }}">

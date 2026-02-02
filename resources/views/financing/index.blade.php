@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'حاسبة تمويل السيارات')
+@section('title', 'تمويل البنوك المتعددة')
 
 @section('content')
     <x-navbar />

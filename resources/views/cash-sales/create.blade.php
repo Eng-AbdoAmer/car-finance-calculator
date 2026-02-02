@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', ' مبيعات كاش')
 @section('content')
 <!-- Hero Section -->
 <section class="hero-section position-relative overflow-hidden">
