@@ -21,6 +21,6 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withCommands([
-        CreateJsonFiles::class,
+        // CreateJsonFiles::class,
     ]) 
     ->create();

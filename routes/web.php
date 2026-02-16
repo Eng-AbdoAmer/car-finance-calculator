@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\FinanceCalculatorController;
 use App\Http\Controllers\CarFinancingController;
 use App\Http\Controllers\CashSaleController;
@@ -11,6 +12,16 @@ use App\Http\Controllers\Admin\CarBrandController;
 use App\Http\Controllers\Admin\CarModelController;
 use App\Http\Controllers\Admin\CalculationAdminController;
 use App\Http\Controllers\Admin\BankController;
+use App\Http\Controllers\Admin\CarController;
+use App\Http\Controllers\Admin\CarTrimController;
+use App\Http\Controllers\Admin\CarCategoryController;
+use App\Http\Controllers\Admin\CarStatusController;
+use App\Http\Controllers\Admin\TransmissionTypeController;
+use App\Http\Controllers\Admin\FuelTypeController;
+use App\Http\Controllers\Admin\DriveTypeController;
+use App\Http\Controllers\Admin\CarImageController;
+use App\Http\Controllers\Admin\CarTypeController;
+use App\Http\Controllers\Admin\CarFinancingRequestController;
 // ========== الصفحة الرئيسية (/) هي صفحة تسجيل الدخول ==========
 Route::get('/login', function () {
     return redirect()->route('login');
@@ -135,31 +146,31 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/{id}/print', [CashSaleController::class, 'print'])->name('print');
     });
     
-    // إدارة طلبات التمويل
-    Route::prefix('financing-requests')->name('financing-requests.')->group(function () {
-        Route::get('/', [CarFinancingRequestController::class, 'index'])->name('index');
-        Route::get('/create', [CarFinancingRequestController::class, 'create'])->name('create');
-        Route::post('/', [CarFinancingRequestController::class, 'store'])->name('store');
-        Route::get('/{id}', [CarFinancingRequestController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [CarFinancingRequestController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [CarFinancingRequestController::class, 'update'])->name('update');
-        Route::delete('/{id}', [CarFinancingRequestController::class, 'destroy'])->name('destroy');
-        Route::post('/{id}/change-status', [CarFinancingRequestController::class, 'changeStatus'])->name('change-status');
-        Route::post('/{id}/calculate', [CarFinancingRequestController::class, 'calculate'])->name('calculate');
-    });
+    // // إدارة طلبات التمويل
+    // Route::prefix('financing-requests')->name('financing-requests.')->group(function () {
+    //     Route::get('/', [CarFinancingRequestController::class, 'index'])->name('index');
+    //     Route::get('/create', [CarFinancingRequestController::class, 'create'])->name('create');
+    //     Route::post('/', [CarFinancingRequestController::class, 'store'])->name('store');
+    //     Route::get('/{id}', [CarFinancingRequestController::class, 'show'])->name('show');
+    //     Route::get('/{id}/edit', [CarFinancingRequestController::class, 'edit'])->name('edit');
+    //     Route::put('/{id}', [CarFinancingRequestController::class, 'update'])->name('update');
+    //     Route::delete('/{id}', [CarFinancingRequestController::class, 'destroy'])->name('destroy');
+    //     Route::post('/{id}/change-status', [CarFinancingRequestController::class, 'changeStatus'])->name('change-status');
+    //     Route::post('/{id}/calculate', [CarFinancingRequestController::class, 'calculate'])->name('calculate');
+    // });
     
     // إدارة الحسابات التمويلية
-    Route::prefix('finance-calculations')->name('finance-calculations.')->group(function () {
-        Route::get('/', [FinanceCalculationController::class, 'index'])->name('index');
-        Route::get('/create', [FinanceCalculationController::class, 'create'])->name('create');
-        Route::post('/', [FinanceCalculationController::class, 'store'])->name('store');
-        Route::get('/{id}', [FinanceCalculationController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [FinanceCalculationController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [FinanceCalculationController::class, 'update'])->name('update');
-        Route::delete('/{id}', [FinanceCalculationController::class, 'destroy'])->name('destroy');
-        Route::get('/{id}/installments', [FinanceCalculationController::class, 'installments'])->name('installments');
-        Route::get('/{id}/print', [FinanceCalculationController::class, 'print'])->name('print');
-    });
+    // Route::prefix('finance-calculations')->name('finance-calculations.')->group(function () {
+    //     Route::get('/', [FinanceCalculationController::class, 'index'])->name('index');
+    //     Route::get('/create', [FinanceCalculationController::class, 'create'])->name('create');
+    //     Route::post('/', [FinanceCalculationController::class, 'store'])->name('store');
+    //     Route::get('/{id}', [FinanceCalculationController::class, 'show'])->name('show');
+    //     Route::get('/{id}/edit', [FinanceCalculationController::class, 'edit'])->name('edit');
+    //     Route::put('/{id}', [FinanceCalculationController::class, 'update'])->name('update');
+    //     Route::delete('/{id}', [FinanceCalculationController::class, 'destroy'])->name('destroy');
+    //     Route::get('/{id}/installments', [FinanceCalculationController::class, 'installments'])->name('installments');
+    //     Route::get('/{id}/print', [FinanceCalculationController::class, 'print'])->name('print');
+    // });
     
   // إدارة المستخدمين
     Route::prefix('users')->name('users.')->group(function () {
@@ -211,30 +222,85 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     });
     
     // إدارة أسعار التأمين
-    Route::prefix('insurance-rates')->name('insurance-rates.')->group(function () {
-        Route::get('/', [InsuranceRateController::class, 'index'])->name('index');
-        Route::get('/create', [InsuranceRateController::class, 'create'])->name('create');
-        Route::post('/', [InsuranceRateController::class, 'store'])->name('store');
-        Route::get('/{id}/edit', [InsuranceRateController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [InsuranceRateController::class, 'update'])->name('update');
-        Route::delete('/{id}', [InsuranceRateController::class, 'destroy'])->name('destroy');
-    });
+    // Route::prefix('insurance-rates')->name('insurance-rates.')->group(function () {
+    //     Route::get('/', [InsuranceRateController::class, 'index'])->name('index');
+    //     Route::get('/create', [InsuranceRateController::class, 'create'])->name('create');
+    //     Route::post('/', [InsuranceRateController::class, 'store'])->name('store');
+    //     Route::get('/{id}/edit', [InsuranceRateController::class, 'edit'])->name('edit');
+    //     Route::put('/{id}', [InsuranceRateController::class, 'update'])->name('update');
+    //     Route::delete('/{id}', [InsuranceRateController::class, 'destroy'])->name('destroy');
+    // });
     
     // التقارير والإحصائيات
-    Route::prefix('reports')->name('reports.')->group(function () {
-        Route::get('/', [ReportController::class, 'index'])->name('index');
-        Route::get('/sales', [ReportController::class, 'salesReport'])->name('sales');
-        Route::get('/financing', [ReportController::class, 'financingReport'])->name('financing');
-        Route::get('/customers', [ReportController::class, 'customersReport'])->name('customers');
-        Route::get('/financial', [ReportController::class, 'financialReport'])->name('financial');
-        Route::post('/export', [ReportController::class, 'export'])->name('export');
-    });
+    // Route::prefix('reports')->name('reports.')->group(function () {
+    //     Route::get('/', [ReportController::class, 'index'])->name('index');
+    //     Route::get('/sales', [ReportController::class, 'salesReport'])->name('sales');
+    //     Route::get('/financing', [ReportController::class, 'financingReport'])->name('financing');
+    //     Route::get('/customers', [ReportController::class, 'customersReport'])->name('customers');
+    //     Route::get('/financial', [ReportController::class, 'financialReport'])->name('financial');
+    //     Route::post('/export', [ReportController::class, 'export'])->name('export');
+    // });
     // إدارة جميع الحسابات
 Route::prefix('calculations')->name('calculations.')->group(function () {
     Route::get('/', [CalculationAdminController::class, 'index'])->name('index');
     Route::get('/user/{userId}', [CalculationAdminController::class, 'getUserCalculations'])->name('user');
     Route::get('/export', [CalculationAdminController::class, 'export'])->name('export');
     Route::get('/stats', [CalculationAdminController::class, 'getStats'])->name('stats');
+});
+
+//     Route::resource('cars', CarController::class);
+//    Route::get('/get-types/{brandId}', [CarController::class, 'getTypesByBrand'])->name('get-types');
+//     Route::get('/get-trims/{brandId}/{typeId}', [CarController::class, 'getTrimsByType'])->name('get-trims');
+    
+//     // Image upload routes
+//     Route::post('/upload-temp-image', [CarController::class, 'uploadTempImage'])->name('upload-temp-image');
+//     Route::post('/delete-temp-image', [CarController::class, 'deleteTempImage'])->name('delete-temp-image');
+    
+//     // Other routes...
+//     Route::post('/{id}/upload-images', [CarController::class, 'uploadImages'])->name('upload-images');
+//     Route::post('/{id}/update-price', [CarController::class, 'updatePrice'])->name('update-price');
+//     Route::post('/{id}/change-availability', [CarController::class, 'changeAvailability'])->name('change-availability');
+//     Route::post('/{carId}/set-main-image/{imageId}', [CarController::class, 'setMainImage'])->name('set-main-image');
+//     Route::delete('/{carId}/delete-image/{imageId}', [CarController::class, 'deleteImage'])->name('delete-image');
+//     Route::get('/{id}/mark-as-sold', [CarController::class, 'markAsSold'])->name('mark-as-sold');
+//     Route::post('/{id}/process-sale', [CarController::class, 'processSale'])->name('process-sale');
+//     Route::get('/export', [CarController::class, 'export'])->name('export');
+//     Route::get('/{id}/duplicate', [CarController::class, 'duplicate'])->name('duplicate');
+//     Route::get('/{id}/details', [CarController::class, 'getCarDetails'])->name('details');
+    //فئات السيارات
+    Route::resource('car-trims', CarTrimController::class);
+    //انواع السيارات
+    Route::resource('car-types', CarTypeController::class);
+    
+    // تصنيفات السيارات
+    Route::resource('car-categories', CarCategoryController::class);
+    
+    // حالات السيارات
+    Route::resource('car-statuses', CarStatusController::class);
+    
+    // أنواع الجير
+    Route::resource('transmission-types', TransmissionTypeController::class);
+    
+    // أنواع الوقود
+    Route::resource('fuel-types', FuelTypeController::class);
+    
+    // أنواع الدفع
+    Route::resource('drive-types', DriveTypeController::class);
+    
+    // صور السيارات
+  // صور السيارات
+Route::prefix('car-images')->name('car-images.')->group(function () {
+    // Routes للموارد الرئيسية
+    Route::get('/', [CarImageController::class, 'index'])->name('index');
+    Route::get('/create', [CarImageController::class, 'create'])->name('create');
+    Route::post('/', [CarImageController::class, 'store'])->name('store');
+    Route::get('/{car_image}', [CarImageController::class, 'show'])->name('show');
+    Route::get('/{car_image}/edit', [CarImageController::class, 'edit'])->name('edit');
+    Route::put('/{car_image}', [CarImageController::class, 'update'])->name('update');
+    Route::delete('/{car_image}', [CarImageController::class, 'destroy'])->name('destroy');
+    
+    // Route خاص لتعيين الصورة الرئيسية
+    Route::post('/{car_image}/set-main', [CarImageController::class, 'setMain'])->name('set-main');
 });
     // إعدادات النظام
     // Route::prefix('settings')->name('settings.')->group(function () {
@@ -243,4 +309,39 @@ Route::prefix('calculations')->name('calculations.')->group(function () {
     //     Route::put('/financial', [SettingController::class, 'updateFinancial'])->name('update.financial');
     //     Route::put('/notifications', [SettingController::class, 'updateNotifications'])->name('update.notifications');
     // });
-});
+
+
+     // ========== إدارة السيارات ==========
+       // ===== موارد السيارات =====
+    Route::resource('cars', CarController::class)->parameters(['cars' => 'car']);
+
+    // ===== مسارات إضافية للسيارات =====
+    Route::controller(CarController::class)->prefix('cars/{car}')->name('cars.')->group(function () {
+
+        // عمليات البيع
+        Route::get('mark-as-sold', 'markAsSold')->name('mark-as-sold');      // admin.cars.mark-as-sold
+        Route::post('process-sale', 'processSale')->name('process-sale');    // admin.cars.process-sale
+
+        // عمليات الحجز
+        Route::post('mark-as-reserved', 'markAsReserved')->name('mark-as-reserved');   // admin.cars.mark-as-reserved
+        Route::post('mark-as-available', 'markAsAvailable')->name('mark-as-available'); // admin.cars.mark-as-available
+
+        // تحديث السعر
+        Route::post('update-price', 'updatePrice')->name('update-price');    // admin.cars.update-price
+
+        // رفع الصور
+        Route::post('upload-images', 'uploadImages')->name('upload-images'); // admin.cars.upload-images
+
+        // إدارة الصور
+        Route::post('set-main-image/{image}', 'setMainImage')->name('set-main-image'); // admin.cars.set-main-image
+        Route::delete('delete-image/{image}', 'deleteImage')->name('delete-image');     // admin.cars.delete-image
+    });
+    });
+    
+    Route::post('/test-post', function() {
+        dd(request()->all());
+    });
+
+
+
+

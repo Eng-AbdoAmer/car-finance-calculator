@@ -174,10 +174,86 @@
                     </table>
                 </div>
 
-                <!-- الترقيم -->
+                <!-- الترقيم المصغر الذكي -->
                 @if($brands->hasPages())
                 <div class="d-flex justify-content-center mt-4">
-                    {{ $brands->links() }}
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination pagination-sm mb-0">
+                            @php
+                                $current = $brands->currentPage();
+                                $last = $brands->lastPage();
+                                $start = max($current - 1, 1);
+                                $end = min($current + 1, $last);
+                            @endphp
+                            
+                            {{-- Previous Page Link --}}
+                            @if ($brands->onFirstPage())
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </li>
+                            @else
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $brands->previousPageUrl() }}" aria-label="Previous">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            @endif
+
+                            {{-- First Page --}}
+                            @if($start > 1)
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $brands->url(1) }}">1</a>
+                                </li>
+                                @if($start > 2)
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                @endif
+                            @endif
+
+                            {{-- Pagination Elements --}}
+                            @for ($i = $start; $i <= $end; $i++)
+                                @if ($i == $current)
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ $i }}</span>
+                                    </li>
+                                @else
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $brands->url($i) }}">{{ $i }}</a>
+                                    </li>
+                                @endif
+                            @endfor
+
+                            {{-- Last Page --}}
+                            @if($end < $last)
+                                @if($end < $last - 1)
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                @endif
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $brands->url($last) }}">{{ $last }}</a>
+                                </li>
+                            @endif
+
+                            {{-- Next Page Link --}}
+                            @if ($brands->hasMorePages())
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $brands->nextPageUrl() }}" aria-label="Next">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                </li>
+                            @endif
+                        </ul>
+                    </nav>
                 </div>
                 @endif
             </div>
@@ -255,16 +331,38 @@
     justify-content: center;
 }
 
-/* تخصيص الترقيم */
-.pagination .page-link {
-    border-radius: 5px;
-    margin: 0 3px;
-    border: 1px solid #dee2e6;
+/* تخصيص الترقيم المصغر */
+.pagination.pagination-sm {
+    font-size: 0.75rem;
+    margin-bottom: 0;
 }
 
-.pagination .page-item.active .page-link {
+.pagination.pagination-sm .page-link {
+    border-radius: 3px;
+    margin: 0 1px;
+    border: 1px solid #dee2e6;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.75rem;
+    min-width: 28px;
+    text-align: center;
+    color: #4361ee;
+    line-height: 1.2;
+}
+
+.pagination.pagination-sm .page-item.active .page-link {
     background-color: #4361ee;
     border-color: #4361ee;
+    color: white;
+}
+
+.pagination.pagination-sm .page-item.disabled .page-link {
+    color: #6c757d;
+}
+
+.pagination.pagination-sm .page-link:hover {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+    color: #3a0ca3;
 }
 
 /* تحسين الشكل على الأجهزة الصغيرة */
@@ -293,6 +391,12 @@
     
     .table td, .table th {
         padding: 0.5rem;
+    }
+    
+    .pagination.pagination-sm .page-link {
+        padding: 0.15rem 0.3rem;
+        font-size: 0.7rem;
+        min-width: 24px;
     }
 }
 </style>

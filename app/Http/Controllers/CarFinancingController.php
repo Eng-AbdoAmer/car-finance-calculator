@@ -100,7 +100,7 @@ class CarFinancingController extends Controller
       public function history(Request $request)
     {
         $query = CarFinancingRequest::with(['bank', 'brand', 'model', 'user'])
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc');
         
         // فلترة حسب الحالة
@@ -129,7 +129,7 @@ class CarFinancingController extends Controller
    public function show($id)
     {
         $request = CarFinancingRequest::with(['bank', 'brand', 'model', 'user'])
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->findOrFail($id);
         
         return view('financing.show', compact('request'));
@@ -144,7 +144,7 @@ class CarFinancingController extends Controller
             'status' => 'required|in:pending,sold,not_sold,follow_up,cancelled',
         ]);
 
-        $financingRequest = CarFinancingRequest::where('user_id', auth()->id())
+        $financingRequest = CarFinancingRequest::where('user_id', Auth::id())
             ->findOrFail($id);
 
         $financingRequest->update([
@@ -176,7 +176,7 @@ class CarFinancingController extends Controller
      */
    public function getStatus($id)
     {
-        $financingRequest = CarFinancingRequest::where('user_id', auth()->id())
+        $financingRequest = CarFinancingRequest::where('user_id', Auth::id())
             ->with(['bank', 'brand', 'model'])
             ->findOrFail($id);
         
@@ -206,7 +206,7 @@ class CarFinancingController extends Controller
      */
       public function destroy($id)
     {
-        $financingRequest = CarFinancingRequest::where('user_id', auth()->id())
+        $financingRequest = CarFinancingRequest::where('user_id', Auth::id())
             ->findOrFail($id);
         
         $financingRequest->delete();
@@ -252,48 +252,73 @@ class CarFinancingController extends Controller
     /**
      * إعداد نص رسالة واتساب
      */
-    private function prepareWhatsAppMessage($request)
-    {
-        $message ="شركة العربه الفريده للسيارات";
-        $message = "📊 *نتائج حساب تمويل السيارة*\n\n";
-        $message .= "🕒 تاريخ الحساب: " . date('Y-m-d H:i') . "\n";
-         $message .= "🏦 البنك: " . ($request->bank->name ?? 'غير محدد') . "\n\n"; 
+    // private function prepareWhatsAppMessage($request)
+    // {
+    //    // $message ="*شركة العربه الفريده للسيارات*\n\n";
+    //     $message = "📊 *شركة العربه الفريده للسيارات*\n\n";
+    //     $message .= "🕒 تاريخ الحساب: " . date('Y-m-d H:i') . "\n";
+    //      $message .= "🏦 البنك: " . ($request->bank->name ?? 'غير محدد') . "\n\n"; 
         
-        $message .= "🚗 *معلومات السيارة:*\n";
-        $message .= "العلامة التجارية: " . ($request->brand->name ?? 'غير محدد') . "\n";
-        $message .= "الموديل: " . ($request->model->model_year ?? 'غير محدد') . "\n";
-        $message .= "سعر السيارة: " . number_format($request->car_price, 0) . " ر.س\n\n";
+    //     $message .= "🚗 *معلومات السيارة:*\n";
+    //     $message .= "العلامة التجارية: " . ($request->brand->name ?? 'غير محدد') . "\n";
+    //     $message .= "الموديل: " . ($request->model->model_year ?? 'غير محدد') . "\n";
+    //     //$message .= "سعر السيارة: " . number_format($request->car_price, 0) . " ر.س\n\n";
         
-        $message .= "💳 *معلومات التمويل:*\n";
-        $message .= "الدفعة الأولى: " . number_format($request->down_payment, 0) . " ر.س\n";
-        // $message .= "مبلغ التمويل: " . number_format($request->financing_amount, 0) . " ر.س\n";
-        $message .= "مدة التمويل: " . $request->duration_months . " شهر\n\n";
         
-        $message .= "📈 *التكاليف:*\n";
-        // $message .= "إجمالي المرابحة: " . number_format($request->murabaha_total, 0) . " ر.س\n";
-        $message .= "إجمالي التأمين: " . number_format($request->insurance_total, 0) . " ر.س\n\n";
+    //     // $message .= "مبلغ التمويل: " . number_format($request->financing_amount, 0) . " ر.س\n";
         
-        $message .= "💰 *النتائج النهائية:*\n";
-        $message .= "القسط الشهري (شامل التأمين): *" . number_format($request->monthly_installment, 0) . " ر.س*\n";
-        $message .= "الدفعة الأخيرة: " . number_format($request->last_payment, 0) . " ر.س\n";
-        $message .= "الإجمالي الكلي: " . number_format($request->total_amount, 0) . " ر.س\n\n";
+    //     // $message .= "📈 *التكاليف:*\n";
+    //     // $message .= "إجمالي المرابحة: " . number_format($request->murabaha_total, 0) . " ر.س\n";
+    //     // $message .= "إجمالي التأمين: " . number_format($request->insurance_total, 0) . " ر.س\n\n";
+    //     //$message .= "💳 *معلومات التمويل:*\n";
+    //      $message .= "*------هذه النتائج تقريبية------*\n";
+    //     // $message .= "💰 *النتائج النهائية:*\n";
+    //     $message .= "الدفعة الأولى: " . number_format($request->down_payment, 0) . " ر.س\n";
+    //     $message .= "القسط الشهري (شامل التأمين): *" . number_format($request->monthly_installment, 0) . " ر.س*\n";
+    //     $message .= "الدفعة الأخيرة: " . number_format($request->last_payment, 0) . " ر.س\n";
+    //     $message .= "مدة التمويل: " . $request->duration_months . " شهر\n\n";
+    //     $message .= "الإجمالي الكلي: " . number_format($request->total_amount, 0) . " ر.س\n\n";
         
-        $message .= "📊 *ملخص النسب:*\n";
-        $message .= "نسبة المرابحة: " . $request->murabaha_rate . "%\n";
-        $message .= "نسبة التأمين: " . $request->insurance_rate . "%\n";
-        $message .= "نسبة الدفعة الأولى: " . $request->down_payment_percentage . "%\n";
-        $message .= "نسبة الدفعة الأخيرة: " . $request->last_payment_rate . "%\n\n";
+    //     // $message .= "📊 *ملخص النسب:*\n";
+    //     // $message .= "نسبة المرابحة: " . $request->murabaha_rate . "%\n";
+    //     // $message .= "نسبة التأمين: " . $request->insurance_rate . "%\n";
+    //     // $message .= "نسبة الدفعة الأولى: " . $request->down_payment_percentage . "%\n";
+    //     // $message .= "نسبة الدفعة الأخيرة: " . $request->last_payment_rate . "%\n\n";
         
-        $message .= "🔗 *رابط النتائج الكاملة:*\n";
-        $message .= route('financing.result.view', ['id' => $request->id]) . "\n\n";
+    //     //$message .= "🔗 *رابط النتائج الكاملة:*\n";
+    //     //$message .= route('financing.result.view', ['id' => $request->id]) . "\n\n";
         
-        $message .= "📞 للاستفسار: 0501234567\n";
-        $message .= "شكراً لاستخدامكم حاسبة التمويل من بنك الراجحي";
+    //    // $message .= "📞 للاستفسار: 0501234567\n";
+    //     $message .= "شكراً لاستخدامكم حاسبة التمويل من بنك الراجحي";
         
-        return $message;
-    }
-
-
+    //     return $message;
+    // }
+//البنوك النتعددة
+private function prepareWhatsAppMessage($request)
+{
+    $message = "📊 *شركة العربة الفريدة للسيارات*\n";
+    $message .= "🏦 البنك: " . ($request->bank->name ?? 'غير محدد') . "\n";
+    $message .= "─────────────────────\n";
+    
+    $message .= "\n🚗 *معلومات السيارة:*\n";
+    $message .= "🚙 نوع السيارة: " . ($request->brand->name ?? 'غير محدد') . "\n";
+    $message .= "📅 الموديل: " . ($request->model->model_year ?? 'غير محدد') . "\n";
+    
+    $message .= "\n⚠️ *هذه النتائج تقريبية*\n";
+    $message .= "─────────────────────\n";
+    
+    $message .= "💰 الدفعة الأولى: " . number_format($request->down_payment, 0) . " ر.س\n";
+    $message .= "💳 القسط الشهري: *" . number_format($request->monthly_installment, 0) . " ر.س*\n";
+    $message .= "🔚 الدفعة الأخيرة: " . number_format($request->last_payment, 0) . " ر.س\n";
+    $message .= "⏳ مدة التمويل: " . $request->duration_months . " شهر\n";
+    $message .= "🏷️ الإجمالي الكلي: " . number_format($request->total_amount, 0) . " ر.س\n";
+    
+    $message .= "\n─────────────────────\n";
+    $message .= "📍 *موقعنا على الخريطة:*\n";
+    $message .= "https://maps.app.goo.gl/2MiE1RG5YpMzymEd6";
+    
+    return $message;
+}
       public function getModels($brandId)
     {
         $models = CarModel::where('car_brand_id', $brandId)

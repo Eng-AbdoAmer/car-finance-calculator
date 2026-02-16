@@ -10,6 +10,7 @@ use App\Models\Brand;
 use App\Models\AgeBracket;
 use App\Models\CarModel;
 use App\Models\CarSegment;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -838,7 +839,7 @@ class FinanceCalculatorController extends Controller
                 'car_brand' => $request->car_brand,
                 'car_segment' => $insuranceRate ? ($insuranceRate->carSegment ? $insuranceRate->carSegment->segment : null) : null,
                 'insurance_rate_id' => $insuranceRate ? $insuranceRate->id : null,
-                'user_id' => auth()->id(),
+                'user_id' => Auth::id(),
                  'status' => 'pending',
             ]);
 
@@ -875,7 +876,7 @@ class FinanceCalculatorController extends Controller
    public function history(Request $request)
     {
         $query = FinanceCalculation::with(['carModel'])
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc');
         
         // فلترة حسب الحالة
@@ -899,7 +900,7 @@ class FinanceCalculatorController extends Controller
     }
     public function editStatus($id)
 {
-    $calculation = FinanceCalculation::where('user_id', auth()->id())
+    $calculation = FinanceCalculation::where('user_id', Auth::id())
         ->findOrFail($id);
     
     $statuses = [
@@ -928,7 +929,7 @@ public function updateStatus(Request $request, $id)
         'status' => 'required|in:pending,sold,not_sold,follow_up,cancelled',  
     ]);
 
-    $calculation = FinanceCalculation::where('user_id', auth()->id())
+    $calculation = FinanceCalculation::where('user_id', Auth::id())
         ->findOrFail($id);
 
     $calculation->update([
@@ -961,7 +962,7 @@ public function updateStatus(Request $request, $id)
  */
 public function getStatus($id)
 {
-    $calculation = FinanceCalculation::where('user_id', auth()->id())
+    $calculation = FinanceCalculation::where('user_id', Auth::id())
         ->findOrFail($id);
     
     $statusText = [
@@ -991,7 +992,7 @@ public function getStatus($id)
 //         'notes' => 'nullable|string|max:1000'
 //     ]);
     
-//     $calculation = FinanceCalculation::where('user_id', auth()->id())
+//     $calculation = FinanceCalculation::where('user_id', Auth::id())
 //         ->findOrFail($id);
     
 //     // حفظ الحالة السابقة للتاريخ
@@ -1003,7 +1004,7 @@ public function getStatus($id)
 //     ]);
     
 //     // تسجيل تغيير الحالة في جدول منفصل (اختياري)
-//     $this->logStatusChange($calculation->id, $oldStatus, $request->status, $request->notes, auth()->id());
+//     $this->logStatusChange($calculation->id, $oldStatus, $request->status, $request->notes, Auth::id());
     
 //     return redirect()->route('finance.history')
 //         ->with('success', 'تم تحديث حالة الحساب بنجاح');
@@ -1015,7 +1016,7 @@ public function getStatus($id)
    public function show($id)
 {
     $calculation = FinanceCalculation::with(['installments', 'carModel'])
-        ->where('user_id', auth()->id())
+        ->where('user_id', Auth::id())
         ->findOrFail($id);
     
     // إضافة نص الحالة للعرض
@@ -1069,49 +1070,77 @@ public function sendWhatsAppMessage($id)
 /**
  * إعداد نص رسالة واتساب
  */
+// private function prepareWhatsAppMessage($financeCalculation)
+// {
+//     $message = "📊 *شركة العربه الفريده للسيارات*\n\n";
+//    // $message .= "🕒 تاريخ الحساب: " . $financeCalculation->created_at->format('Y-m-d H:i') . "\n";
+//     // $message .= "👤 العميل: " . $financeCalculation->gender_display . "\n";
+//   //  $message .= "📞 الهاتف: " . $financeCalculation->phone . "\n\n";
+    
+//     $message .= "🚗 *معلومات السيارة:*\n";
+//     $message .= " نوع السيارة: " . $financeCalculation->car_brand . "\n";
+//    // $message .= "سعر السيارة: " . number_format($financeCalculation->car_price, 0) . " ر.س\n\n";
+//      $message .= "الموديل: " . ($financeCalculation->carModel->name ?? 'غير محدد') . "\n";
+//     $message .= "💳 *معلومات التمويل:*\n";
+//     $message .= "الدفعة الأولى: " . number_format($financeCalculation->down_payment_amount, 0) . " ر.س\n";
+//     $message .= "مدة التمويل: " . $financeCalculation->loan_term_months . " شهر\n";
+//     $message .= "القسط الشهري : *" . number_format($financeCalculation->monthly_installment_with_insurance, 0) . " ر.س*\n";
+//     $message .= "الدفعة الأخيرة: " . number_format($financeCalculation->final_payment_amount, 0) . " ر.س\n\n";
+//     $message .= "الإجمالي الكلي: " . number_format($financeCalculation->grand_total, 0) . " ر.س\n\n";
+    
+//     // $message .= "مبلغ التمويل: " . number_format($financeCalculation->financed_amount, 0) . " ر.س\n";
+//    // $message .= "📈 *التكاليف:*\n";
+//     // $message .= "إجمالي الربح: " . number_format($financeCalculation->total_profit, 0) . " ر.س\n";
+//     // $message .= "إجمالي التأمين: " . number_format($financeCalculation->total_insurance, 0) . " ر.س\n\n";
+    
+//    // $message .= "💰 *النتائج النهائية:*\n";
+//     //$message .= "القسط الشهري (بدون تأمين): " . number_format($financeCalculation->monthly_installment_without_insurance, 0) . " ر.س\n";
+    
+//     //$message .= "📊 *ملخص النسب:*\n";
+//     // $message .= "نسبة هامش الربح: " . $financeCalculation->profit_margin_percentage . "%\n";
+//     // $message .= "نسبة التأمين: " . $financeCalculation->insurance_rate_percentage . "%\n";
+//     // $message .= "نسبة الدفعة الأولى: " . $financeCalculation->down_payment_percentage . "%\n";
+//     // $message .= "نسبة الدفعة الأخيرة: " . $financeCalculation->final_payment_percentage . "%\n\n";
+    
+//     // $message .= "🔗 *رابط النتائج الكاملة:*\n";
+//     // $message .= route('finance.show', ['id' => $financeCalculation->id]) . "\n\n";
+//    $message .= "\n─────────────────────\n";
+//     $message .= "العنوان: خميس مشيط حي المعارض";
+    
+//     return $message;
+// }
+
+//بنك الراجحي
+
 private function prepareWhatsAppMessage($financeCalculation)
 {
-    $message = "📊 *نتائج حساب تمويل السيارة*\n\n";
-    $message .= "🕒 تاريخ الحساب: " . $financeCalculation->created_at->format('Y-m-d H:i') . "\n";
-    // $message .= "👤 العميل: " . $financeCalculation->gender_display . "\n";
-    $message .= "📞 الهاتف: " . $financeCalculation->phone . "\n\n";
+    $message = "📊 *شركة العربه الفريده للسيارات*\n";
+    $message .= "─────────────────────\n";
     
-    $message .= "🚗 *معلومات السيارة:*\n";
-    $message .= "العلامة التجارية: " . $financeCalculation->car_brand . "\n";
-    $message .= "سعر السيارة: " . number_format($financeCalculation->car_price, 0) . " ر.س\n\n";
-     $message .= "الموديل: " . ($financeCalculation->carModel->name ?? 'غير محدد') . "\n";
-    $message .= "💳 *معلومات التمويل:*\n";
-    $message .= "الدفعة الأولى: " . number_format($financeCalculation->down_payment_amount, 0) . " ر.س\n";
-    $message .= "مبلغ التمويل: " . number_format($financeCalculation->financed_amount, 0) . " ر.س\n";
-    $message .= "مدة التمويل: " . $financeCalculation->loan_term_months . " شهر\n";
-    $message .= "الدفعة الأخيرة: " . number_format($financeCalculation->final_payment_amount, 0) . " ر.س\n\n";
+    $message .= "\n🚗 *معلومات السيارة:*\n";
+    $message .= "🚙 نوع السيارة: " . ($financeCalculation->car_brand ?? 'غير محدد') . "\n";
+    $message .= "📅 الموديل: " . ($financeCalculation->carModel->model_year ?? 'غير محدد') . "\n";
     
-    $message .= "📈 *التكاليف:*\n";
-    $message .= "إجمالي الربح: " . number_format($financeCalculation->total_profit, 0) . " ر.س\n";
-    $message .= "إجمالي التأمين: " . number_format($financeCalculation->total_insurance, 0) . " ر.س\n\n";
+    $message .= "\n⚠️ *هذه النتائج تقريبية*\n";
+    $message .= "─────────────────────\n";
     
-    $message .= "💰 *النتائج النهائية:*\n";
-    $message .= "القسط الشهري (شامل التأمين): *" . number_format($financeCalculation->monthly_installment_with_insurance, 0) . " ر.س*\n";
-    $message .= "القسط الشهري (بدون تأمين): " . number_format($financeCalculation->monthly_installment_without_insurance, 0) . " ر.س\n";
-    $message .= "الإجمالي الكلي: " . number_format($financeCalculation->grand_total, 0) . " ر.س\n\n";
+    $message .= "💰 الدفعة الأولى: " . number_format($financeCalculation->down_payment_amount, 0) . " ر.س\n";
+    $message .= "⏳ مدة التمويل: " . $financeCalculation->loan_term_months . " شهر\n";
+    $message .= "💳 القسط الشهري: *" . number_format($financeCalculation->monthly_installment_with_insurance, 0) . " ر.س*\n";
+    $message .= "🔚 الدفعة الأخيرة: " . number_format($financeCalculation->final_payment_amount, 0) . " ر.س\n";
+    $message .= "🏷️ الإجمالي الكلي: " . number_format($financeCalculation->grand_total, 0) . " ر.س\n";
     
-    $message .= "📊 *ملخص النسب:*\n";
-    $message .= "نسبة هامش الربح: " . $financeCalculation->profit_margin_percentage . "%\n";
-    $message .= "نسبة التأمين: " . $financeCalculation->insurance_rate_percentage . "%\n";
-    $message .= "نسبة الدفعة الأولى: " . $financeCalculation->down_payment_percentage . "%\n";
-    $message .= "نسبة الدفعة الأخيرة: " . $financeCalculation->final_payment_percentage . "%\n\n";
-    
-    $message .= "🔗 *رابط النتائج الكاملة:*\n";
-    $message .= route('finance.show', ['id' => $financeCalculation->id]) . "\n\n";
-    
-    $message .= "شكراً لاستخدامكم حاسبة التمويل الآلي";
+    $message .= "\n─────────────────────\n";
+    $message .= "📍 *موقعنا:* خميس مشيط حي المعارض\n";
+    $message .= "🗺️ رابط الخريطة:\n";
+    $message .= "https://maps.app.goo.gl/2MiE1RG5YpMzymEd6";
     
     return $message;
 }
 
   public function destroy($id)
     {
-        $calculation = FinanceCalculation::where('user_id', auth()->id())
+        $calculation = FinanceCalculation::where('user_id', Auth::id())
             ->findOrFail($id);
         
         // حذف التقسيطات المرتبطة

@@ -17,14 +17,25 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
       $this->call([
-             CarSegmentSeeder::class,
-            AgeBracketSeeder::class,
-          
-            BrandSeeder::class,
-            InsuranceRateSeeder::class,
-            BankSeeder::class,
+        UserSeeder::class,
+        CarSegmentSeeder::class,
+        AgeBracketSeeder::class,
+        BrandSeeder::class,
+        InsuranceRateSeeder::class,
+        BankSeeder::class,
+        CarStatusesSeeder::class,
+        DriveTypesSeeder::class,
+        FuelTypesSeeder::class,
+        TransmissionTypesSeeder::class,
+        CarMaintenanceRecordSeeder::class,
+        CarPriceHistorySeeder::class,
+        CarCategoriesSeeder::class,
           CarBrandSeeder::class,
-          CarModelSeeder::class,
+          CarTypeSeeder::class,
+            // CarTypeSeeder::class, 
+            CarModelSeeder::class,
+           CarTrimSeeder::class,
+        
         ]);
    
     }

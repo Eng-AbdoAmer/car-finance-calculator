@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title') - نظام إدارة المبيعات</title>
-        <!-- Favicon (شعار التبويب) -->
+    <!-- Favicon (شعار التبويب) -->
     <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/png">
     <link rel="shortcut icon" href="{{ asset('img/logo.png') }}" type="image/png">
     <link rel="apple-touch-icon" href="{{ asset('img/logo.png') }}">
@@ -36,6 +36,7 @@
 
     <!-- Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
     <!-- Custom CSS -->
     <style>
@@ -463,10 +464,10 @@
                             <span>المستخدمين</span>
                         </a>
                     </li>
-                        <li class="nav-item">
+                    <li class="nav-item">
                         <a href="{{ route('admin.banks.index') }}"
                             class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                             <i class="fas fa-university"></i>
+                            <i class="fas fa-university"></i>
                             <span>البنوك</span>
                         </a>
                     </li>
@@ -482,13 +483,45 @@
                                     <a href="{{ route('admin.car-brands.index') }}" class="nav-link">الماركات</a>
                                 </li>
                                 <li class="nav-item">
+                                    <a href="{{ route('admin.car-types.index') }}" class="nav-link">النواع</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.car-trims.index') }}" class="nav-link">الفئات</a>
+                                </li>
+                                <li class="nav-item">
                                     <a href="{{ route('admin.car-models.index') }}" class="nav-link">الموديلات</a>
                                 </li>
-                            </ul>
-                        </div>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.car-categories.index') }}" class="nav-link">الاقسام</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.car-statuses.index') }}" class="nav-link">حالات البيع</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.drive-types.index') }}" class="nav-link">نوع الدفع</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.fuel-types.index') }}" class="nav-link">أنواع الوقود</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.car-images.index') }}" class="nav-link">صور السيارات</a>
+                                </li>
                     </li>
-                   
-                    {{-- <li class="nav-item">
+                    <li class="nav-item">
+                        <a href="{{ route('admin.transmission-types.index') }}" class="nav-link">نوع الجير</a>
+                    </li>
+                </ul>
+            </div>
+            </li>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.cars.index') }}"
+                    class="nav-link {{ request()->routeIs('admin.cars.*') ? 'active' : '' }}">
+                    <i class="fas fa-car"></i>
+                    <span>إدارة السيارات</span>
+                </a>
+            </li>
+            {{-- <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#settingsMenu">
                             <i class="fas fa-cog"></i>
                             <span>الإعدادات</span>
@@ -504,120 +537,120 @@
                         </div>
                     </li> --}}
 
-                    {{-- <li class="nav-item">
+            {{-- <li class="nav-item">
                         <a href="{{ route('admin.reports.index') }}"
                             class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
                             <i class="fas fa-chart-bar"></i>
                             <span>التقارير والإحصائيات</span>
                         </a>
                     </li> --}}
-                </ul>
-            </div>
+            </ul>
+    </div>
 
-            <div class="sidebar-footer">
-                <div class="user-info">
-                    <div class="d-flex align-items-center">
-                        <img src="{{ auth()->user()->avatar_url }}" alt="User" class="user-avatar me-2">
-                        <div>
-                            <h6 class="mb-0 text-white">{{ auth()->user()->name }}</h6>
-                            <small
-                                class="text-white-50">{{ auth()->user()->type == 'admin' ? 'مدير النظام' : 'مستخدم' }}</small>
-                        </div>
-                    </div>
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <div class="d-flex align-items-center">
+                <img src="{{ auth()->user()->avatar_url }}" alt="User" class="user-avatar me-2">
+                <div>
+                    <h6 class="mb-0 text-white">{{ auth()->user()->name }}</h6>
+                    <small
+                        class="text-white-50">{{ auth()->user()->type == 'admin' ? 'مدير النظام' : 'مستخدم' }}</small>
                 </div>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Header -->
-            <header class="main-header">
-                <div class="header-left">
-                    <button class="toggle-sidebar d-lg-none" id="mobileToggleSidebar">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <h1 class="page-title">@yield('page-title', 'لوحة التحكم')</h1>
-                </div>
-
-                <div class="header-right">
-                    <div class="dropdown">
-                        <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-bell"></i>
-                            <span class="badge bg-danger">3</span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <h6 class="dropdown-header">الإشعارات</h6>
-                            <a class="dropdown-item" href="#">
-                                <div class="d-flex">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-check-circle text-success"></i>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <p class="mb-0">تمت معالجة طلب تمويل جديد</p>
-                                        <small class="text-muted">منذ 5 دقائق</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="dropdown-item" href="#">
-                                <div class="d-flex">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-exclamation-triangle text-warning"></i>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <p class="mb-0">مستحقات قيد الانتظار</p>
-                                        <small class="text-muted">منذ ساعة</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-center" href="#">عرض جميع الإشعارات</a>
-                        </div>
-                    </div>
-
-                    <div class="dropdown">
-                        <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <img src="{{ auth()->user()->avatar_url }}" alt="User" class="user-avatar">
-                            <span>{{ auth()->user()->name }}</span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end">
-
-                              <a class="dropdown-item" href="{{ url('/') }}">
-                                <i class="fas fa-home me-1"></i> الرئيسية
-                            </a>
-                            <a class="dropdown-item" href="{{ route('profile.index') }}">
-                                <i class="fas fa-user me-2"></i>ملفي الشخصي
-                            </a>
-                            
-                            <a class="dropdown-item" href="#">
-                                <i class="fas fa-cog me-2"></i>الإعدادات
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{{ route('logout') }}"
-                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                <i class="fas fa-sign-out-alt me-2"></i>تسجيل الخروج
-                            </a>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                @csrf
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Content -->
-            <div class="content-wrapper">
-                <!-- Breadcrumb -->
-                <nav aria-label="breadcrumb" class="mb-4">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">لوحة التحكم</a></li>
-                        @yield('breadcrumb')
-                    </ol>
-                </nav>
-
-                <!-- Page Content -->
-                @yield('content')
             </div>
         </div>
+    </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="header-left">
+                <button class="toggle-sidebar d-lg-none" id="mobileToggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">@yield('page-title', 'لوحة التحكم')</h1>
+            </div>
+
+            <div class="header-right">
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge bg-danger">3</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end">
+                        <h6 class="dropdown-header">الإشعارات</h6>
+                        <a class="dropdown-item" href="#">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <p class="mb-0">تمت معالجة طلب تمويل جديد</p>
+                                    <small class="text-muted">منذ 5 دقائق</small>
+                                </div>
+                            </div>
+                        </a>
+                        <a class="dropdown-item" href="#">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <p class="mb-0">مستحقات قيد الانتظار</p>
+                                    <small class="text-muted">منذ ساعة</small>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-center" href="#">عرض جميع الإشعارات</a>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <img src="{{ auth()->user()->avatar_url }}" alt="User" class="user-avatar">
+                        <span>{{ auth()->user()->name }}</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end">
+
+                        <a class="dropdown-item" href="{{ url('/') }}">
+                            <i class="fas fa-home me-1"></i> الرئيسية
+                        </a>
+                        <a class="dropdown-item" href="{{ route('profile.index') }}">
+                            <i class="fas fa-user me-2"></i>ملفي الشخصي
+                        </a>
+
+                        <a class="dropdown-item" href="#">
+                            <i class="fas fa-cog me-2"></i>الإعدادات
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="fas fa-sign-out-alt me-2"></i>تسجيل الخروج
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content-wrapper">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">لوحة التحكم</a></li>
+                    @yield('breadcrumb')
+                </ol>
+            </nav>
+
+            <!-- Page Content -->
+            @yield('content')
+        </div>
+    </div>
     </div>
 
     <!-- Scripts -->
@@ -631,7 +664,7 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ar.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script>
         // إدارة حالة السايدبار
         const sidebar = document.getElementById('sidebar');

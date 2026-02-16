@@ -126,31 +126,31 @@
                         @php
                             $salesNumbers = [
                                 [
-                                    'name' => 'رمضان',
+                                    'name' => 'رمضان السيد',
                                     'number' => '0530577333',
                                     'icon' => 'fas fa-user-tie',
                                     'color' => 'primary',
                                 ],
                                 [
-                                    'name' => 'أبو تولين',
+                                    'name' => 'أحمد خميس',
                                     'number' => '0532115333',
                                     'icon' => 'fas fa-user-tie',
                                     'color' => 'success',
                                 ],
                                 [
-                                    'name' => 'أبو حنين',
+                                    'name' => 'أشرف مصباح',
                                     'number' => '0530272333',
                                     'icon' => 'fas fa-user-tie',
                                     'color' => 'warning',
                                 ],
                                 [
-                                    'name' => 'أبو ياسين',
+                                    'name' => 'أحمد خالد',
                                     'number' => '0559053330',
                                     'icon' => 'fas fa-user-tie',
                                     'color' => 'danger',
                                 ],
                                 [
-                                    'name' => 'سفر',
+                                    'name' => 'سفر الشهراني',
                                     'number' => '0505859595',
                                     'icon' => 'fas fa-user-tie',
                                     'color' => 'info',

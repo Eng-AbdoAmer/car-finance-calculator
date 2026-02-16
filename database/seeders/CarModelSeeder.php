@@ -18,10 +18,12 @@ class CarModelSeeder extends Seeder
         
         $currentYear = Carbon::now()->year;
         
-        // إضافة السنوات من 2000 إلى السنة الحالية فقط
-        for ($year = 2000; $year <= $currentYear; $year++) {
+        // إضافة السنوات من 2010 إلى السنة الحالية فقط
+        for ($year = 2010; $year <= $currentYear; $year++) {
             CarModel::create([
                 'model_year' => $year,
+                'created_at' => now(),
+                 'updated_at' => now()
             ]);
         }
         

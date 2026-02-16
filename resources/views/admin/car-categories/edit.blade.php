@@ -1,0 +1,119 @@
+@extends('layouts.admin')
+
+@section('title', 'تعديل الفئة')
+
+@section('page-title', 'تعديل الفئة')
+
+@section('breadcrumb')
+<li class="breadcrumb-item"><a href="{{ route('admin.car-categories.index') }}">فئات السيارات</a></li>
+<li class="breadcrumb-item active">تعديل الفئة</li>
+@endsection
+
+@section('content')
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0 text-white">
+                    <i class="fas fa-edit me-2"></i>تعديل الفئة: {{ $category->name }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form action="{{ route('admin.car-categories.update', $category->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    
+                    <div class="mb-4">
+                        <label for="name" class="form-label">اسم الفئة <span class="text-danger">*</span></label>
+                        <input type="text" 
+                               name="name" 
+                               id="name" 
+                               class="form-control form-control-lg @error('name') is-invalid @enderror"
+                               value="{{ old('name', $category->name) }}"
+                               placeholder="أدخل اسم الفئة الجديد"
+                               required
+                               autofocus>
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="text-muted">يمكنك تعديل اسم الفئة، ولكن تأكد من أن الاسم الجديد فريد وغير مكرر.</small>
+                    </div>
+
+                    <!-- معلومات الفئة الحالية -->
+                    <div class="info-section bg-light p-3 rounded mb-4">
+                        <h6 class="mb-3"><i class="fas fa-history me-2"></i>معلومات الفئة الحالية</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <small class="text-muted">الاسم الحالي:</small>
+                                    <div class="fw-bold">{{ $category->name }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <small class="text-muted">تاريخ الإنشاء:</small>
+                                    <div class="fw-bold">{{ $category->created_at->format('Y/m/d') }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <small class="text-muted">عدد السيارات:</small>
+                                    <div><span class="badge bg-info">{{ $category->cars_count ?? 0 }}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- تحذير إذا كانت الفئة مرتبطة بسيارات -->
+                    @if($category->cars_count > 0)
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>ملاحظة:</strong> هذه الفئة مرتبطة بــ <strong>{{ $category->cars_count }}</strong> سيارة. 
+                        عند تعديل الاسم، سيتم تحديث جميع السيارات المرتبطة بهذه الفئة تلقائياً.
+                    </div>
+                    @endif
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <div>
+                            <a href="{{ route('admin.car-categories.show', $category->id) }}" class="btn btn-secondary me-2">
+                                <i class="fas fa-eye me-1"></i> عرض
+                            </a>
+                            <a href="{{ route('admin.car-categories.index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i> إلغاء
+                            </a>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> حفظ التعديلات
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('styles')
+<style>
+.form-control-lg {
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 1.1rem;
+}
+
+.form-control-lg:focus {
+    border-color: #4361ee;
+    box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+}
+
+.info-section {
+    border-left: 4px solid #4361ee;
+}
+
+.alert {
+    border-radius: 8px;
+}
+</style>
+@endpush

@@ -193,7 +193,7 @@
                 <h5 class="card-title mb-0">
                     <i class="fas fa-list me-2"></i>أحدث طلبات التمويل
                 </h5>
-                <a href="{{ route('admin.financing-requests.index') }}" class="btn btn-sm btn-primary">عرض الكل</a>
+                {{-- <a href="{{ route('admin.financing-requests.index') }}" class="btn btn-sm btn-primary">عرض الكل</a> --}}
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
