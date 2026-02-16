@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Log;
 
 class CarController extends Controller
 {
+    //الحمدلله الذي بنعمته تتم الصالحات، والصلاة والسلام على أشرف الأنبياء والمرسلين، نبينا محمد وعلى آله وصحبه أجمعين.
     public function index(Request $request)
     {
         $search = $request->get('search');
