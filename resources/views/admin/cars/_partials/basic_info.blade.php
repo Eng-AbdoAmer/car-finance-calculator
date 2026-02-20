@@ -91,12 +91,14 @@
                         class="form-control select2 @error('model_year') is-invalid @enderror"
                         data-placeholder="اختر السنة" required>
                         <option value=""></option>
-                        @for ($year = date('Y') + 1; $year >= 1990; $year--)
+                        @forelse($years as $year)
                             <option value="{{ $year }}"
                                 {{ old('model_year', $car->model_year ?? '') == $year ? 'selected' : '' }}>
                                 {{ $year }}
                             </option>
-                        @endfor
+                        @empty
+                            <option value="" disabled>لا توجد سنوات متاحة</option>
+                        @endforelse
                     </select>
                     @error('model_year')
                         <div class="invalid-feedback d-block">{{ $message }}</div>

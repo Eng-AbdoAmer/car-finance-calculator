@@ -73,6 +73,10 @@
                                             </button>
                                         </form>
                                     @endif
+                                    <a href="{{ route('admin.cars.print', $car->id) }}" class="btn btn-info btn-sm"
+                                        target="_blank">
+                                        <i class="fas fa-print me-1"></i>طباعة
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -81,6 +85,7 @@
                     <div class="row">
                         <!-- عمود الصور والمعلومات الأساسية -->
                         <div class="col-md-4">
+
                             <!-- معرض الصور -->
                             <div class="card mb-4">
                                 <div class="card-header bg-light">
@@ -428,6 +433,9 @@
                                     <i class="fas fa-dollar-sign me-1"></i>تسجيل بيع
                                 </a>
                             @endif
+                            <a href="{{ route('admin.cars.print', $car->id) }}" class="btn btn-info" target="_blank">
+                                <i class="fas fa-print me-1"></i>طباعة
+                            </a>
                         </div>
                         <div>
                             <form action="{{ route('admin.cars.destroy', $car->id) }}" method="POST" class="d-inline"

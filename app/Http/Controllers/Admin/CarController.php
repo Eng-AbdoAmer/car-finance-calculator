@@ -10,6 +10,7 @@ use App\Models\CarBrand;
 use App\Models\CarType;
 use App\Models\CarTrim;
 use App\Models\CarCategory;
+use App\Models\CarModel;
 use App\Models\CarStatus;
 use App\Models\TransmissionType;
 use App\Models\FuelType;
@@ -20,53 +21,84 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
   use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class CarController extends Controller
 {
     //الحمدلله الذي بنعمته تتم الصالحات، والصلاة والسلام على أشرف الأنبياء والمرسلين، نبينا محمد وعلى آله وصحبه أجمعين.
-    public function index(Request $request)
-    {
-        $search = $request->get('search');
-        $brandId = $request->get('brand_id');
-        $statusId = $request->get('status_id');
-        $condition = $request->get('condition');
-
-        $cars = Car::with(['brand', 'type', 'status', 'mainImage'])
-            ->when($search, function ($q) use ($search) {
-                return $q->where(function ($q2) use ($search) {
-                    $q2->where('code', 'like', "%{$search}%")
-                        ->orWhere('chassis_number', 'like', "%{$search}%")
-                        ->orWhere('plate_number', 'like', "%{$search}%")
-                        ->orWhere('color', 'like', "%{$search}%")
-                        ->orWhereHas('brand', fn($q3) => $q3->where('name', 'like', "%{$search}%"))
-                        ->orWhereHas('type', fn($q3) => $q3->where('name', 'like', "%{$search}%"));
-                });
-            })
-            ->when($brandId, fn($q) => $q->where('car_brand_id', $brandId))
-            ->when($statusId, fn($q) => $q->where('car_status_id', $statusId))
-            ->when($condition, fn($q) => $q->where('condition', $condition))
-            ->orderBy('id', 'desc')
-            ->paginate(15);
-
-        $brands = CarBrand::all();
-        $statuses = CarStatus::orderBy('order')->get();
-        $conditions = ['new' => 'جديدة', 'used' => 'مستعملة', 'salvage' => 'تشليح', 'refurbished' => 'مجددة'];
-
-        $stats = [
-            'total'     => Car::count(),
-            'available' => Car::where('availability', 'available')->count(),
-            'sold'      => Car::where('availability', 'sold')->count(),
-            'reserved'  => Car::where('availability', 'reserved')->count(),
-        ];
-
-        return view('admin.cars.index', compact(
-            'cars', 'search', 'brands', 'statuses', 'conditions',
-            'brandId', 'statusId', 'condition', 'stats'
-        ));
+public function index(Request $request)
+{
+    // تحرير الحجوزات المنتهية
+    $reservedCars = Car::where('availability', 'reserved')->get();
+    foreach ($reservedCars as $car) {
+        if (!cache()->has("car_reserved_{$car->id}")) {
+            $car->update([
+                'availability' => 'available',
+                'reserved_by' => null,
+            ]);
+        }
     }
+
+    $search = $request->get('search');
+    $brandId = $request->get('brand_id');
+    $statusId = $request->get('status_id');
+    $condition = $request->get('condition');
+    $availability = $request->get('availability');
+
+    $cars = Car::with(['brand', 'type', 'status', 'mainImage'])
+        ->when($search, function ($q) use ($search) {
+            return $q->where(function ($q2) use ($search) {
+                $q2->where('code', 'like', "%{$search}%")
+                    ->orWhere('chassis_number', 'like', "%{$search}%")
+                    ->orWhere('plate_number', 'like', "%{$search}%")
+                    ->orWhere('color', 'like', "%{$search}%")
+                    ->orWhereHas('brand', fn($q3) => $q3->where('name', 'like', "%{$search}%"))
+                    ->orWhereHas('type', fn($q3) => $q3->where('name', 'like', "%{$search}%"));
+            });
+        })
+        ->when($brandId, fn($q) => $q->where('car_brand_id', $brandId))
+        ->when($statusId, fn($q) => $q->where('car_status_id', $statusId))
+        ->when($condition, fn($q) => $q->where('condition', $condition))
+        ->when($availability, 
+            function ($q) use ($availability) {
+                return $q->where('availability', $availability); // إذا اختار المستخدم قيمة محددة (available, reserved, sold)
+            },
+            function ($q) {
+                return $q->where('availability', '!=', 'sold'); // إذا لم يختر شيئاً، استبعد المباعة
+            }
+        )
+        ->orderBy('id', 'desc')
+        ->paginate(15);
+
+    $brands = CarBrand::all();
+    $statuses = CarStatus::orderBy('order')->get();
+    $conditions = ['new' => 'جديدة', 'used' => 'مستعملة', 'salvage' => 'تشليح', 'refurbished' => 'مجددة'];
+    $availabilities = [
+        'available' => 'متاحة للبيع',
+        'reserved'  => 'محجوزة',
+        'sold'      => 'مباعة'
+    ];
+
+    $stats = [
+        'total'     => Car::count(),
+        'available' => Car::where('availability', 'available')->count(),
+        'sold'      => Car::where('availability', 'sold')->count(),
+        'reserved'  => Car::where('availability', 'reserved')->count(),
+    ];
+
+    return view('admin.cars.index', compact(
+        'cars', 'search', 'brands', 'statuses', 'conditions', 'availabilities',
+        'brandId', 'statusId', 'condition', 'availability', 'stats'
+    ));
+}
 
     public function create()
     {
+        $years = CarModel::whereNotNull('model_year')  
+                ->distinct()
+                ->orderBy('model_year', 'desc')
+                ->pluck('model_year')
+                ->toArray();
         $brands = CarBrand::all();
         $types  = CarType::all();
         $trims  = CarTrim::all();
@@ -80,7 +112,7 @@ class CarController extends Controller
         $defaultCode = Car::generateCode();
 
         return view('admin.cars.create', compact(
-            'brands', 'types', 'trims', 'categories', 'statuses',
+            'years', 'brands', 'types', 'trims', 'categories', 'statuses',
             'transmissions', 'fuelTypes', 'driveTypes', 'conditions', 'defaultCode'
         ));
     }
@@ -253,27 +285,27 @@ public function update(Request $request, $id)
             ->with('success', 'تم تسجيل بيع السيارة بنجاح.');
     }
 
-    public function markAsReserved($id)
-    {
-        $car = Car::findOrFail($id);
-        $car->update([
-            'availability' => 'reserved',
-            'reserved_by'  => Auth::id(),
-        ]);
+    // public function markAsReserved($id)
+    // {
+    //     $car = Car::findOrFail($id);
+    //     $car->update([
+    //         'availability' => 'reserved',
+    //         'reserved_by'  => Auth::id(),
+    //     ]);
 
-        return redirect()->back()->with('success', 'تم حجز السيارة بنجاح.');
-    }
+    //     return redirect()->back()->with('success', 'تم حجز السيارة بنجاح.');
+    // }
 
-    public function markAsAvailable($id)
-    {
-        $car = Car::findOrFail($id);
-        $car->update([
-            'availability' => 'available',
-            'reserved_by'  => null,   // إلغاء الحجز
-        ]);
+    // public function markAsAvailable($id)
+    // {
+    //     $car = Car::findOrFail($id);
+    //     $car->update([
+    //         'availability' => 'available',
+    //         'reserved_by'  => null,   // إلغاء الحجز
+    //     ]);
 
-        return redirect()->back()->with('success', 'تم إتاحة السيارة مرة أخرى.');
-    }
+    //     return redirect()->back()->with('success', 'تم إتاحة السيارة مرة أخرى.');
+    // }
 
     // ============ دوال مساعدة للصور ============
 
@@ -336,4 +368,99 @@ public function update(Request $request, $id)
         return redirect()->route('admin.cars.show', $car->id)
             ->with('success', 'تم حذف الصورة.');
     }
+
+    public function destroy($id)
+{
+    $car = Car::findOrFail($id);
+    
+    // حذف ملفات الصور من التخزين
+    foreach ($car->images as $image) {
+        Storage::disk('public')->delete($image->image_path);
+    }
+    
+    // حذف السيارة (سيتم حذف سجلات الصور تلقائياً بسبب cascade)
+    $car->delete();
+
+    return redirect()->route('admin.cars.index')
+        ->with('success', 'تم حذف السيارة وجميع الصور المرتبطة بها بنجاح.');
+}
+
+
+public function markAsReserved($id)
+{
+    $car = Car::findOrFail($id);
+    
+    $expiresAt =  now()->addHours(48);
+    cache()->put("car_reserved_{$car->id}", $expiresAt, $expiresAt);
+    
+    $car->update([
+        'availability' => 'reserved',
+        'reserved_by'  => Auth::id(),
+    ]);
+
+    if (request()->wantsJson()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'تم حجز السيارة لمدة 48 ساعة',
+            'expires_at' => $expiresAt->timestamp * 1000 //  ثانية
+        ]);
+    }
+
+    return redirect()->back()->with('success', 'تم حجز السيارة لمدة دقيقة.');
+}
+
+public function markAsAvailable($id)
+{
+    $car = Car::findOrFail($id);
+    
+    $car->update([
+        'availability' => 'available',
+        'reserved_by'  => null,
+    ]);
+    cache()->forget("car_reserved_{$car->id}");
+
+    if (request()->wantsJson()) {
+        return response()->json(['success' => true]);
+    }
+
+    return redirect()->back()->with('success', 'تم إتاحة السيارة مرة أخرى.');
+}
+
+public function autoRelease($id)
+{
+    $car = Car::findOrFail($id);
+    
+    if ($car->availability === 'reserved') {
+        $car->update([
+            'availability' => 'available',
+            'reserved_by'  => null,
+        ]);
+        cache()->forget("car_reserved_{$car->id}");
+        
+        return response()->json(['success' => true]);
+    }
+    
+    return response()->json(['success' => false, 'message' => 'السيارة لم تعد محجوزة']);
+}
+
+public function getStats()
+{
+    $stats = [
+        'total'     => Car::count(),
+        'available' => Car::where('availability', 'available')->count(),
+        'sold'      => Car::where('availability', 'sold')->count(),
+        'reserved'  => Car::where('availability', 'reserved')->count(),
+    ];
+    return response()->json($stats);
+}
+public function print($id)
+{
+    $car = Car::with([
+        'brand', 'type', 'trim', 'category', 'status',
+        'transmission', 'fuelType', 'driveType',
+        'mainImage' // العلاقة الخاصة بالصورة الرئيسية (إذا كانت معرفة)
+    ])->findOrFail($id);
+
+    return view('admin.cars.print', compact('car'));
+}
 }

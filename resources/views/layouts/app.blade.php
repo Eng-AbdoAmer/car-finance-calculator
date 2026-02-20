@@ -1,429 +1,453 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>@yield('title') - حاسبة التمويل الآلي</title>
-    <!-- Favicon (شعار التبويب) -->
-<link rel="icon" href="{{ asset('img/logo.png') }}" type="image/png">
-<link rel="shortcut icon" href="{{ asset('img/logo.png') }}" type="image/png">
-<link rel="apple-touch-icon" href="{{ asset('img/logo.png') }}">
-    
-    <!-- Bootstrap 5 RTL -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
-
-
-        <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <!-- Google Fonts - Tajawal -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Custom CSS -->
+    <title>طباعة بيانات السيارة - {{ $car->code }}</title>
     <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --success-color: #27ae60;
-            --info-color: #17a2b8;
-            --warning-color: #f39c12;
-            --danger-color: #e74c3c;
-        }
-        
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Tajawal', sans-serif;
-            padding-top: 20px;
-            padding-bottom: 50px;
-        }
-        
-        .calculator-container {
-            max-width: 800px;
-            margin: 50px auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.1);
-            padding: 30px;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 20px;
-        }
-        
-        .header h1 {
-            color: #2c3e50;
-            font-weight: 700;
-        }
-        
-        .form-label {
-            font-weight: 600;
-            color: #34495e;
-            margin-bottom: 8px;
-        }
-        
-        .form-control, .form-select {
-            border-radius: 8px;
-            padding: 12px 15px;
-            border: 2px solid #e1e8ed;
-            transition: all 0.3s;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: #3498db;
-            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
-        }
-        
-        .btn-calculate {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            border: none;
-            color: white;
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: 600;
-            border-radius: 10px;
-            width: 100%;
-            transition: all 0.3s;
-            margin-top: 20px;
-        }
-        
-        .btn-calculate:hover {
-            background: linear-gradient(135deg, #2980b9, #1c5a7a);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .alert {
-            border-radius: 10px;
-            border: none;
-        }
-        
-        .form-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-        }
-        
-        .section-title {
-            color: #2c3e50;
-            font-weight: 700;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #3498db;
-        }
-        
-        @media (max-width: 768px) {
-            .calculator-container {
-                margin: 20px;
-                padding: 20px;
-            }
-        }
-        
-        /* تنسيقات صفحة النتائج */
-        .result-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.1);
-            padding: 30px;
-        }
-        
-        .summary-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        
-        .summary-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-        
-        .summary-label {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-        
-        .table-custom {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-        
-        .table-custom thead th {
-            background: #2c3e50;
-            color: white;
-            border: none;
-            padding: 15px;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        .table-custom tbody td {
-            padding: 12px 15px;
-            vertical-align: middle;
-            font-size: 13px;
-        }
-        
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+
+        /* إعدادات الطباعة بالأبيض والأسود */
         @media print {
-            .no-print {
-                display: none;
-            }
             body {
                 background: white;
                 padding: 0;
             }
-            .result-container {
+
+            .paper {
                 box-shadow: none;
                 padding: 0;
             }
+
+            .print-button {
+                display: none;
+            }
+
+            /* إجبار جميع الألوان على التدرج الرمادي */
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
 
-
-        
-    </style>
-    
-    <!-- Custom CSS -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-      {{-- <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --light-color: #ecf0f1;
-            --dark-color: #2c3e50;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-            --info-color: #3498db;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Tajawal', sans-serif;
+            background: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
-            padding-bottom: 40px;
+            padding: 20px;
         }
-        
+
+        .paper {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 15mm 15mm 10mm 15mm;
+            margin: 0 auto;
+            border-radius: 5px;
+        }
+
+        .print-container {
+            max-width: 100%;
+        }
+
+        /* رأس الصفحة بتوزيع متوازن */
         .header {
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 20px 0;
-            border-radius: 0 0 20px 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-        
-        .calculator-card {
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            margin-bottom: 30px;
-            border: none;
-        }
-        
-        .section-title {
-            color: var(--primary-color);
-            border-right: 4px solid var(--secondary-color);
-            padding-right: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #333;
+            /* أسود بدلاً من الأزرق */
+            padding-bottom: 15px;
             margin-bottom: 20px;
-            font-weight: 700;
         }
-        
-        .form-label {
-            font-weight: 600;
-            color: var(--dark-color);
-            margin-bottom: 8px;
+
+        .logo {
+            flex: 0 0 80px;
         }
-        
-        .form-control, .form-select {
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            padding: 12px 15px;
-            transition: all 0.3s;
-            background-color: #f8f9fa;
+
+        .logo img {
+            max-width: 100%;
+            height: auto;
+            background: white;
+            padding: 5px;
+            border: 1px solid #ccc;
         }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
-            background-color: white;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .btn-calculate {
-            background: linear-gradient(to right, var(--success-color), #2ecc71);
-            border: none;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-weight: 600;
+
+        .company-name {
             font-size: 18px;
-            width: 100%;
-            margin-top: 20px;
-            transition: all 0.3s;
-        }
-        
-        .btn-calculate:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.3);
-            color: white;
-        }
-        
-        .result-card {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #34495e 100%);
-            color: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .result-item {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--secondary-color);
-        }
-        
-        .result-label {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 5px;
-        }
-        
-        .result-value {
-            font-size: 22px;
             font-weight: bold;
-        }
-        
-        .alert-custom {
-            border-radius: 10px;
-            border: none;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-        
-        .table-custom {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .table-custom thead th {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 15px;
-        }
-        
-        .table-custom tbody td {
-            padding: 12px 15px;
-            border-color: #eee;
-        }
-        
-        .table-custom tbody tr:hover {
-            background-color: rgba(52, 152, 219, 0.05);
-        }
-        
-        .footer {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 20px 0;
-            margin-top: 40px;
-            border-radius: 20px 20px 0 0;
+            color: #333;
             text-align: center;
         }
-        
-        .input-group-text {
-            background-color: var(--light-color);
-            border-color: #ddd;
-        }
-        
-        /* تأثيرات للبطاقات */
-        .card-hover {
-            transition: transform 0.3s;
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-5px);
-        }
-        
-        /* تخصيص شريط التمرير */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--secondary-color);
-            border-radius: 10px;
-        }
-        
-        /* تصميم للهواتف */
-        @media (max-width: 768px) {
-            .calculator-card {
-                padding: 20px;
-            }
-            
-            .section-title {
-                font-size: 1.2rem;
-            }
-            
-            .result-value {
-                font-size: 18px;
-            }
-        }
-    </style> --}}
-      <!-- Navbar CSS -->
-    <link href="{{ asset('css/navbar.css') }}" rel="stylesheet">
-    @stack('styles')
-</head>
-<body class="bg-dark">
-    {{-- <x-navbar />  --}}
-    <div class="container-fluid py-3">
-        @yield('content')
-    </div>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- GSAP (للتأثيرات) -->
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-    
-    <!-- Custom JS -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-        <script src="{{ asset('js/navbar.js') }}"></script>
-    @stack('scripts')
+        .qr-code {
+            text-align: center;
+            flex: 0 0 100px;
+        }
+
+        .qr-code svg {
+            width: 80px;
+            /* تصغير حجم QR قليلاً */
+            height: 80px;
+            filter: grayscale(100%);
+            /* تحويل QR إلى أبيض وأسود */
+        }
+
+        .qr-code small {
+            display: block;
+            color: #555;
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        /* قسم الصورة والملخص */
+        .car-info {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .car-image {
+            flex: 0 0 200px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            font-size: 14px;
+            height: 120px;
+            /* ارتفاع ثابت ومناسب */
+            border: 1px solid #ccc;
+            overflow: hidden;
+        }
+
+        .car-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* قص الصورة لملء المساحة دون تشويه */
+            border-radius: 8px;
+        }
+
+        .car-summary {
+            flex: 1;
+        }
+
+        .car-summary table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .car-summary table td {
+            padding: 8px 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .car-summary table td:first-child {
+            font-weight: bold;
+            width: 35%;
+            color: #333;
+        }
+
+        .color-dot {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            background: {{ $car->color ?? '#ccc' }};
+            border: 1px solid #666;
+            vertical-align: middle;
+            margin-left: 5px;
+            border-radius: 2px;
+            filter: grayscale(100%);
+            /* جعل النقطة رمادية */
+        }
+
+        /* المواصفات الفنية */
+        .specs-section {
+            margin-top: 25px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+
+        .specs-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .spec-item {
+            background: #f8f8f8;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .spec-item .label {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 4px;
+        }
+
+        .spec-item .value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        /* صندوق السعر */
+        .price-box {
+            margin-top: 30px;
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #aaa;
+        }
+
+        .price-box .label {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .price-box .value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .price-box small {
+            display: block;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        /* شارات الميزات */
+        .features {
+            margin-top: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .feature-badge {
+            background: #e0e0e0;
+            color: #333;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 1px solid #888;
+        }
+
+        .description-box {
+            margin-top: 15px;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            border-top: 1px dashed #aaa;
+            padding-top: 15px;
+        }
+
+        /* زر الطباعة (يظهر فقط على الشاشة) */
+        .print-button {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .print-button button {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'Tajawal', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="paper">
+        <div class="print-container">
+            <!-- رأس الصفحة: شعار - اسم الشركة - QR code -->
+            <div class="header">
+                <div class="logo">
+                    <img src="{{ asset('img/logo.png') }}" alt="شعار الشركة">
+                </div>
+                <div class="company-name">
+                    شركة العربة الفريدة للسيارات
+                </div>
+                <div class="qr-code">
+                    {!! QrCode::size(80)->generate($car->code) !!}
+                    <small>كود: {{ $car->code }}</small>
+                </div>
+            </div>
+
+            <!-- صورة وملخص سريع -->
+            <div class="car-info">
+                <div class="car-image">
+                    @if ($car->mainImage)
+                        <img src="{{ asset('storage/' . $car->mainImage->image_path) }}" alt="صورة السيارة">
+                    @else
+                        <span>لا توجد صورة</span>
+                    @endif
+                </div>
+                <div class="car-summary">
+                    <table>
+                        <tr>
+                            <td>العلامة التجارية:</td>
+                            <td>{{ $car->brand->name ?? 'غير محدد' }}</td>
+                        </tr>
+                        <tr>
+                            <td>الموديل:</td>
+                            <td>{{ $car->type->name ?? 'غير محدد' }}</td>
+                        </tr>
+                        <tr>
+                            <td>الفئة:</td>
+                            <td>{{ $car->trim->name ?? 'غير محدد' }}</td>
+                        </tr>
+                        <tr>
+                            <td>سنة الموديل:</td>
+                            <td>{{ $car->model_year ?? 'غير محدد' }}</td>
+                        </tr>
+                        <tr>
+                            <td>اللون:</td>
+                            <td><span class="color-dot"></span> {{ $car->color ?? 'غير محدد' }}</td>
+                        </tr>
+                        <tr>
+                            <td>الممشي:</td>
+                            <td>{{ number_format($car->mileage) ?? '0' }} كم</td>
+                        </tr>
+                        <tr>
+                            <td>الحالة:</td>
+                            <td>
+                                @php
+                                    $conditions = [
+                                        'new' => 'جديدة',
+                                        'used' => 'مستعملة',
+                                        'salvage' => 'تشليح',
+                                        'refurbished' => 'مجددة',
+                                    ];
+                                @endphp
+                                {{ $conditions[$car->condition] ?? $car->condition }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- المواصفات الفنية -->
+            <div class="specs-section">
+                <div class="specs-title">المواصفات الفنية</div>
+                <div class="specs-grid">
+                    <div class="spec-item">
+                        <div class="label">ناقل الحركة</div>
+                        <div class="value">{{ $car->transmission->name ?? 'غير محدد' }}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="label">نوع الوقود</div>
+                        <div class="value">{{ $car->fuelType->name ?? 'غير محدد' }}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="label">نوع الدفع</div>
+                        <div class="value">{{ $car->driveType->name ?? 'غير محدد' }}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="label">سعة المحرك</div>
+                        <div class="value">
+                            {{ $car->engine_capacity ? number_format($car->engine_capacity) . ' سي سي' : 'غير محدد' }}
+                        </div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="label">القوة الحصانية</div>
+                        <div class="value">
+                            {{ $car->horse_power ? number_format($car->horse_power) . ' حصان' : 'غير محدد' }}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="label">عدد الأسطوانات</div>
+                        <div class="value">{{ $car->cylinders ?? 'غير محدد' }}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="label">عدد الأبواب</div>
+                        <div class="value">{{ $car->doors ?? 'غير محدد' }}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="label">عدد المقاعد</div>
+                        <div class="value">{{ $car->seats ?? 'غير محدد' }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- صندوق السعر -->
+            <div class="price-box">
+                <div class="label">سعر البيع</div>
+                <div class="value">{{ number_format($car->selling_price, 2) }} ر.س</div>
+                @if ($car->is_negotiable)
+                    <small>(قابل للتفاوض)</small>
+                @endif
+            </div>
+
+            <!-- ميزات إضافية ووصف -->
+            <div class="specs-section">
+                <div class="specs-title">معلومات إضافية</div>
+                <div class="features">
+                    @if ($car->is_featured)
+                        <span class="feature-badge"><i class="fas fa-star"></i> مميزة</span>
+                    @endif
+                    @if ($car->is_financeable)
+                        <span class="feature-badge"><i class="fas fa-hand-holding-usd"></i> قابلة للتمويل</span>
+                    @endif
+                    @if ($car->is_negotiable)
+                        <span class="feature-badge"><i class="fas fa-comments"></i> قابل للتفاوض</span>
+                    @endif
+                </div>
+                @if ($car->description)
+                    <div class="description-box">
+                        <strong>الوصف:</strong> {{ $car->description }}
+                    </div>
+                @endif
+            </div>
+
+            <!-- تذييل -->
+            <div class="footer">
+                تم إنشاء هذا المستند في {{ now()->format('Y-m-d H:i') }} - جميع الحقوق محفوظة © {{ date('Y') }}
+            </div>
+
+            <!-- زر الطباعة (يظهر فقط على الشاشة) -->
+            <div class="print-button">
+                <button onclick="window.print()">طباعة</button>
+            </div>
+        </div>
+    </div>
+    <!-- أيقونات FontAwesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
+
 </html>

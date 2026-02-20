@@ -532,7 +532,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    {{-- <div class="col-md-6">
                                         <div class="form-group mb-3">
                                             <label for="country_of_origin">بلد المنشأ</label>
                                             <input type="text" name="country_of_origin" id="country_of_origin"
@@ -587,136 +587,139 @@
                                             @enderror
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group mb-3">
-                                            <label for="description">وصف السيارة <span
-                                                    class="text-danger">*</span></label>
-                                            <textarea name="description" id="description" rows="4"
-                                                class="form-control @error('description') is-invalid @enderror" placeholder="أدخل وصفاً تفصيلياً للسيارة...">{{ old('description', $car->description) }}</textarea>
-                                            @error('description')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group mb-3">
+                                                <label for="description">وصف السيارة <span
+                                                        class="text-danger">*</span></label>
+                                                <textarea name="description" id="description" rows="4"
+                                                    class="form-control @error('description') is-invalid @enderror" placeholder="أدخل وصفاً تفصيلياً للسيارة...">{{ old('description', $car->description) }}</textarea>
+                                                @error('description')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group mb-3">
-                                            <label for="notes">ملاحظات إضافية (داخلية)</label>
-                                            <textarea name="notes" id="notes" rows="2" class="form-control @error('notes') is-invalid @enderror"
-                                                placeholder="أدخل أي ملاحظات إضافية...">{{ old('notes', $car->notes) }}</textarea>
-                                            @error('notes')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                    {{-- <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group mb-3">
+                                                <label for="notes">ملاحظات إضافية (داخلية)</label>
+                                                <textarea name="notes" id="notes" rows="2" class="form-control @error('notes') is-invalid @enderror"
+                                                    placeholder="أدخل أي ملاحظات إضافية...">{{ old('notes', $car->notes) }}</textarea>
+                                                @error('notes')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
+                                    </div> --}}
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group mb-3">
-                                            <label for="features">المميزات الإضافية</label>
-                                            <textarea name="features" id="features" rows="3"
-                                                class="form-control @error('features') is-invalid @enderror" placeholder="أدخل المميزات كل مميزة في سطر...">{{ old('features', is_array($car->features) ? implode("\n", $car->features) : $car->features) }}</textarea>
-                                            <small class="text-muted">كل مميزة في سطر جديد</small>
-                                            @error('features')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                    {{-- <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group mb-3">
+                                                <label for="features">المميزات الإضافية</label>
+                                                <textarea name="features" id="features" rows="3"
+                                                    class="form-control @error('features') is-invalid @enderror" placeholder="أدخل المميزات كل مميزة في سطر...">{{ old('features', is_array($car->features) ? implode("\n", $car->features) : $car->features) }}</textarea>
+                                                <small class="text-muted">كل مميزة في سطر جديد</small>
+                                                @error('features')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group mb-3">
-                                            <label for="specifications">المواصفات الإضافية</label>
-                                            <textarea name="specifications" id="specifications" rows="3"
-                                                class="form-control @error('specifications') is-invalid @enderror" placeholder="أدخل المواصفات كـ JSON...">{{ old('specifications', is_string($car->specifications) ? $car->specifications : json_encode($car->specifications, JSON_PRETTY_PRINT)) }}</textarea>
-                                            <small class="text-muted">صيغة JSON مثل: {"طول": "4.5م", "عرض": "1.8م"}</small>
-                                            @error('specifications')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group mb-3">
+                                                <label for="specifications">المواصفات الإضافية</label>
+                                                <textarea name="specifications" id="specifications" rows="3"
+                                                    class="form-control @error('specifications') is-invalid @enderror" placeholder="أدخل المواصفات كـ JSON...">{{ old('specifications', is_string($car->specifications) ? $car->specifications : json_encode($car->specifications, JSON_PRETTY_PRINT)) }}</textarea>
+                                                <small class="text-muted">صيغة JSON مثل: {"طول": "4.5م", "عرض":
+                                                    "1.8م"}</small>
+                                                @error('specifications')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
+                                    </div> --}}
 
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-check form-switch mb-3">
-                                            <input type="checkbox" name="is_featured" id="is_featured"
-                                                class="form-check-input" value="1"
-                                                {{ old('is_featured', $car->is_featured) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="is_featured">سيارة مميزة</label>
+                                    {{-- <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-check form-switch mb-3">
+                                                <input type="checkbox" name="is_featured" id="is_featured"
+                                                    class="form-check-input" value="1"
+                                                    {{ old('is_featured', $car->is_featured) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="is_featured">سيارة مميزة</label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-check form-switch mb-3">
-                                            <input type="checkbox" name="is_negotiable" id="is_negotiable"
-                                                class="form-check-input" value="1"
-                                                {{ old('is_negotiable', $car->is_negotiable) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="is_negotiable">قابل للتفاوض</label>
+                                        <div class="col-md-3">
+                                            <div class="form-check form-switch mb-3">
+                                                <input type="checkbox" name="is_negotiable" id="is_negotiable"
+                                                    class="form-check-input" value="1"
+                                                    {{ old('is_negotiable', $car->is_negotiable) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="is_negotiable">قابل للتفاوض</label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-check form-switch mb-3">
-                                            <input type="checkbox" name="is_financeable" id="is_financeable"
-                                                class="form-check-input" value="1"
-                                                {{ old('is_financeable', $car->is_financeable) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="is_financeable">تمويل متاح</label>
+                                        <div class="col-md-3">
+                                            <div class="form-check form-switch mb-3">
+                                                <input type="checkbox" name="is_financeable" id="is_financeable"
+                                                    class="form-check-input" value="1"
+                                                    {{ old('is_financeable', $car->is_financeable) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="is_financeable">تمويل متاح</label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-check form-switch mb-3">
-                                            <input type="checkbox" name="has_ownership" id="has_ownership"
-                                                class="form-check-input" value="1"
-                                                {{ old('has_ownership', $car->has_ownership) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="has_ownership">ملكية واضحة</label>
+                                        <div class="col-md-3">
+                                            <div class="form-check form-switch mb-3">
+                                                <input type="checkbox" name="has_ownership" id="has_ownership"
+                                                    class="form-check-input" value="1"
+                                                    {{ old('has_ownership', $car->has_ownership) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="has_ownership">ملكية واضحة</label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-check form-switch mb-3">
-                                            <input type="checkbox" name="has_insurance" id="has_insurance"
-                                                class="form-check-input" value="1"
-                                                {{ old('has_insurance', $car->has_insurance) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="has_insurance">تأمين ساري</label>
+                                        <div class="col-md-3">
+                                            <div class="form-check form-switch mb-3">
+                                                <input type="checkbox" name="has_insurance" id="has_insurance"
+                                                    class="form-check-input" value="1"
+                                                    {{ old('has_insurance', $car->has_insurance) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="has_insurance">تأمين ساري</label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-check form-switch mb-3">
-                                            <input type="checkbox" name="has_registration" id="has_registration"
-                                                class="form-check-input" value="1"
-                                                {{ old('has_registration', $car->has_registration) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="has_registration">استمارة سارية</label>
+                                        <div class="col-md-3">
+                                            <div class="form-check form-switch mb-3">
+                                                <input type="checkbox" name="has_registration" id="has_registration"
+                                                    class="form-check-input" value="1"
+                                                    {{ old('has_registration', $car->has_registration) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="has_registration">استمارة
+                                                    سارية</label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-check form-switch mb-3">
-                                            <input type="checkbox" name="has_maintenance_record"
-                                                id="has_maintenance_record" class="form-check-input" value="1"
-                                                {{ old('has_maintenance_record', $car->has_maintenance_record) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="has_maintenance_record">سجل صيانة</label>
+                                        <div class="col-md-3">
+                                            <div class="form-check form-switch mb-3">
+                                                <input type="checkbox" name="has_maintenance_record"
+                                                    id="has_maintenance_record" class="form-check-input" value="1"
+                                                    {{ old('has_maintenance_record', $car->has_maintenance_record) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="has_maintenance_record">سجل
+                                                    صيانة</label>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
-                        </div>
 
-                        {{-- 8. أزرار الإجراءات --}}
-                        <div class="form-group mt-4 text-center">
-                            <button type="submit" class="btn btn-primary btn-lg px-5" id="submitBtn">
-                                <i class="fas fa-save me-1"></i> حفظ التعديلات
-                            </button>
-                            <a href="{{ route('admin.cars.show', $car->id) }}" class="btn btn-info btn-lg px-4">
-                                <i class="fas fa-eye me-1"></i> عرض
-                            </a>
-                            <a href="{{ route('admin.cars.index') }}" class="btn btn-secondary btn-lg px-4">
-                                <i class="fas fa-arrow-left me-1"></i> رجوع
-                            </a>
-                        </div>
+                            {{-- 8. أزرار الإجراءات --}}
+                            <div class="form-group mt-4 text-center">
+                                <button type="submit" class="btn btn-primary btn-lg px-5" id="submitBtn">
+                                    <i class="fas fa-save me-1"></i> حفظ التعديلات
+                                </button>
+                                <a href="{{ route('admin.cars.show', $car->id) }}" class="btn btn-info btn-lg px-4">
+                                    <i class="fas fa-eye me-1"></i> عرض
+                                </a>
+                                <a href="{{ route('admin.cars.index') }}" class="btn btn-secondary btn-lg px-4">
+                                    <i class="fas fa-arrow-left me-1"></i> رجوع
+                                </a>
+                            </div>
                     </form>
                 </div>
             </div>
@@ -884,7 +887,7 @@
                 $('#car_brand_id').val('{{ old('car_brand_id', $car->car_brand_id) }}').trigger('change');
                 setTimeout(function() {
                     $('#car_type_id').val('{{ old('car_type_id', $car->car_type_id) }}').trigger(
-                    'change');
+                        'change');
                     setTimeout(function() {
                         $('#car_trim_id').val('{{ old('car_trim_id', $car->car_trim_id) }}')
                             .trigger('change');

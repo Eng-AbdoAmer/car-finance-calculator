@@ -3,27 +3,32 @@
     <div class="col-md-6">
         <div class="form-group mb-3">
             <label for="model_year">سنة الموديل <span class="text-danger">*</span></label>
-            <input type="number" name="model_year" id="model_year"
-                class="form-control @error('model_year') is-invalid @enderror"
-                value="{{ old('model_year', $car->model_year ?? '') }}" min="1900" max="{{ date('Y') + 1 }}"
+            <select name="model_year" id="model_year" class="form-control @error('model_year') is-invalid @enderror"
                 required>
+                <option value="">اختر السنة</option>
+                @foreach ($years as $year)
+                    <option value="{{ $year }}"
+                        {{ old('model_year', $car->model_year ?? '') == $year ? 'selected' : '' }}>
+                        {{ $year }}
+                    </option>
+                @endforeach
+            </select>
             @error('model_year')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
     </div>
-    <div class="col-md-6">
+    {{-- <div class="col-md-6">
         <div class="form-group mb-3">
             <label for="manufacturing_year">سنة الصنع</label>
             <input type="number" name="manufacturing_year" id="manufacturing_year"
                 class="form-control @error('manufacturing_year') is-invalid @enderror"
-                value="{{ old('manufacturing_year', $car->manufacturing_year ?? '') }}" min="1900"
-                max="{{ date('Y') + 1 }}">
+                value="{{ old('manufacturing_year', $car->manufacturing_year ?? '') }}" min="1900">
             @error('manufacturing_year')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
-    </div>
+    </div> --}}
     <div class="col-md-4">
         <div class="form-group mb-3">
             <label for="color">اللون <span class="text-danger">*</span></label>

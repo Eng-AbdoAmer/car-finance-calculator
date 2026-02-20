@@ -41,19 +41,19 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                    <select name="status_id" class="form-control">
-                                        <option value="">جميع الحالات</option>
-                                        @foreach ($statuses as $status)
-                                            <option value="{{ $status->id }}"
-                                                {{ request('status_id') == $status->id ? 'selected' : '' }}>
-                                                {{ $status->name }}
+                                    <select name="availability" class="form-control">
+                                        <option value="">جميع حالات التوفر</option>
+                                        @foreach ($availabilities as $key => $value)
+                                            <option value="{{ $key }}"
+                                                {{ request('availability') == $key ? 'selected' : '' }}>
+                                                {{ $value }}
                                             </option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-2">
                                     <select name="condition" class="form-control">
-                                        <option value="">جميع الحالات</option>
+                                        <option value="">جميع حالات السيارة</option>
                                         @foreach ($conditions as $key => $value)
                                             <option value="{{ $key }}"
                                                 {{ request('condition') == $key ? 'selected' : '' }}>
@@ -67,7 +67,7 @@
                                         <button class="btn btn-primary" type="submit">
                                             <i class="fas fa-search"></i> بحث
                                         </button>
-                                        @if (request()->anyFilled(['search', 'brand_id', 'status_id', 'condition']))
+                                        @if (request()->anyFilled(['search', 'brand_id', 'status_id', 'condition', 'availability']))
                                             <a href="{{ route('admin.cars.index') }}" class="btn btn-secondary">
                                                 <i class="fas fa-times"></i> إلغاء
                                             </a>
@@ -84,7 +84,7 @@
                             <div class="stat-card" style="background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h2 class="stat-number">{{ $stats['total'] }}</h2>
+                                        <h2 class="stat-number" id="stats-total">{{ $stats['total'] }}</h2>
                                         <h6 class="stat-label">إجمالي السيارات</h6>
                                     </div>
                                     <i class="fas fa-car"></i>
@@ -95,7 +95,7 @@
                             <div class="stat-card" style="background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h2 class="stat-number">{{ $stats['available'] }}</h2>
+                                        <h2 class="stat-number" id="stats-available">{{ $stats['available'] }}</h2>
                                         <h6 class="stat-label">متاحة للبيع</h6>
                                     </div>
                                     <i class="fas fa-check-circle"></i>
@@ -106,7 +106,7 @@
                             <div class="stat-card" style="background: linear-gradient(135deg, #f72585 0%, #b5179e 100%);">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h2 class="stat-number">{{ $stats['sold'] }}</h2>
+                                        <h2 class="stat-number" id="stats-sold">{{ $stats['sold'] }}</h2>
                                         <h6 class="stat-label">مباعة</h6>
                                     </div>
                                     <i class="fas fa-shopping-cart"></i>
@@ -117,7 +117,7 @@
                             <div class="stat-card" style="background: linear-gradient(135deg, #f8961e 0%, #f3722c 100%);">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h2 class="stat-number">{{ $stats['reserved'] }}</h2>
+                                        <h2 class="stat-number" id="stats-reserved">{{ $stats['reserved'] }}</h2>
                                         <h6 class="stat-label">محجوزة</h6>
                                     </div>
                                     <i class="fas fa-clock"></i>
@@ -126,6 +126,7 @@
                         </div>
                     </div>
 
+                    <!-- جدول السيارات -->
                     <!-- جدول السيارات -->
                     <div class="table-responsive">
                         <table class="table table-hover">
@@ -143,7 +144,7 @@
                             </thead>
                             <tbody>
                                 @forelse($cars as $car)
-                                    <tr>
+                                    <tr @if ($car->availability == 'reserved') class="reserved-row" @endif>
                                         <td>{{ $loop->iteration + ($cars->currentPage() - 1) * $cars->perPage() }}</td>
                                         <td>
                                             @if ($car->mainImage)
@@ -212,24 +213,19 @@
                                                         <i class="fas fa-shopping-cart"></i>
                                                     </a>
                                                     {{-- زر الحجز --}}
-                                                    <form action="{{ route('admin.cars.mark-as-reserved', $car->id) }}"
-                                                        method="POST" class="d-inline">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-sm btn-warning"
-                                                            data-bs-toggle="tooltip" title="حجز">
-                                                            <i class="fas fa-clock"></i>
-                                                        </button>
-                                                    </form>
+                                                    <button type="button" class="btn btn-sm btn-warning reserve-btn"
+                                                        data-car-id="{{ $car->id }}" data-bs-toggle="tooltip"
+                                                        title="حجز">
+                                                        <i class="fas fa-clock"></i>
+                                                    </button>
                                                 @elseif($car->availability == 'reserved')
                                                     {{-- زر إلغاء الحجز --}}
-                                                    <form action="{{ route('admin.cars.mark-as-available', $car->id) }}"
-                                                        method="POST" class="d-inline">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-sm btn-info"
-                                                            data-bs-toggle="tooltip" title="إلغاء الحجز">
-                                                            <i class="fas fa-check-circle"></i>
-                                                        </button>
-                                                    </form>
+                                                    <button type="button" class="btn btn-sm btn-info cancel-reserve-btn"
+                                                        data-car-id="{{ $car->id }}"
+                                                        data-expires="{{ cache("car_reserved_{$car->id}")?->timestamp * 1000 ?? 0 }}"
+                                                        data-bs-toggle="tooltip" title="إلغاء الحجز">
+                                                        <i class="fas fa-check-circle"></i>
+                                                    </button>
                                                 @endif
 
                                                 {{-- زر الحذف --}}
@@ -263,7 +259,6 @@
                             </tbody>
                         </table>
                     </div>
-
                     <!-- الترقيم -->
                     @if ($cars->hasPages())
                         <div class="d-flex justify-content-center mt-4">
@@ -278,6 +273,17 @@
 
 @push('styles')
     <style>
+        /* تمييز الصف للسيارة المحجوزة */
+        .reserved-row {
+            background-color: #fff3cd !important;
+            /* أصفر فاتح */
+        }
+
+        .reserved-row td {
+            background-color: inherit !important;
+            /* لضمان أن جميع الخلايا ترث اللون */
+        }
+
         .empty-state {
             text-align: center;
             padding: 2rem;
@@ -389,5 +395,187 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
+    </script>
+@endpush
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+            // دالة تحديث الصف إلى متاح
+            function updateRowToAvailable(row) {
+                row.classList.remove('reserved-row');
+                const actionsCell = row.querySelector('td:last-child .btn-group');
+                const carId = row.querySelector('.cancel-reserve-btn')?.dataset.carId;
+                updateStats();
+                if (!carId) return;
+
+                // الحصول على الأزرار الثابتة
+                const viewBtn = actionsCell.querySelector('a.btn-info')?.outerHTML || '';
+                const editBtn = actionsCell.querySelector('a.btn-primary')?.outerHTML || '';
+                const deleteForm = actionsCell.querySelector('form:last-child')?.outerHTML || '';
+
+                const availableButtons = `
+            <a href="/admin/cars/${carId}/mark-as-sold" class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="بيع">
+                <i class="fas fa-shopping-cart"></i>
+            </a>
+            <button type="button" class="btn btn-sm btn-warning reserve-btn" data-car-id="${carId}" data-bs-toggle="tooltip" title="حجز">
+                <i class="fas fa-clock"></i>
+            </button>
+        `;
+
+                actionsCell.innerHTML = viewBtn + editBtn + availableButtons + deleteForm;
+
+                // إعادة تفعيل tooltips
+                if (typeof bootstrap !== 'undefined') {
+                    actionsCell.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(
+                        el));
+                }
+
+                attachReserveHandler(actionsCell.querySelector('.reserve-btn'));
+            }
+
+            // دالة تحديث الصف إلى محجوز
+            function updateRowToReserved(row, expiresAt) {
+                row.classList.add('reserved-row');
+                const actionsCell = row.querySelector('td:last-child .btn-group');
+                const carId = row.querySelector('.reserve-btn')?.dataset.carId;
+                updateStats();
+                if (!carId) return;
+
+                const viewBtn = actionsCell.querySelector('a.btn-info')?.outerHTML || '';
+                const editBtn = actionsCell.querySelector('a.btn-primary')?.outerHTML || '';
+                const deleteForm = actionsCell.querySelector('form:last-child')?.outerHTML || '';
+
+                const cancelButton = `
+            <button type="button" class="btn btn-sm btn-info cancel-reserve-btn" data-car-id="${carId}" data-expires="${expiresAt}" data-bs-toggle="tooltip" title="إلغاء الحجز">
+                <i class="fas fa-check-circle"></i>
+            </button>
+        `;
+
+                actionsCell.innerHTML = viewBtn + editBtn + cancelButton + deleteForm;
+
+                if (typeof bootstrap !== 'undefined') {
+                    actionsCell.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(
+                        el));
+                }
+
+                attachCancelHandler(actionsCell.querySelector('.cancel-reserve-btn'));
+                startTimerForRow(row, carId, parseInt(expiresAt));
+            }
+
+            // دالة بدء المؤقت
+            function startTimerForRow(row, carId, expiresAt) {
+                const now = Date.now();
+                const delay = Math.max(0, expiresAt - now);
+                if (delay <= 0) {
+                    // إذا انتهت المدة بالفعل، حرر الحجز فوراً
+                    fetch(`/admin/cars/${carId}/auto-release`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) updateRowToAvailable(row);
+                        });
+                    return;
+                }
+
+                setTimeout(() => {
+                    fetch(`/admin/cars/${carId}/auto-release`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) updateRowToAvailable(row);
+                        });
+                }, delay);
+            }
+
+            // ربط حدث الحجز
+            function attachReserveHandler(btn) {
+                if (!btn) return;
+                btn.addEventListener('click', function() {
+                    const carId = this.dataset.carId;
+                    const url = '{{ route('admin.cars.mark-as-reserved', ':id') }}'.replace(':id', carId);
+                    const row = this.closest('tr');
+
+                    fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                updateRowToReserved(row, data.expires_at);
+                            }
+                        });
+                });
+            }
+
+            // ربط حدث إلغاء الحجز
+            function attachCancelHandler(btn) {
+                if (!btn) return;
+                btn.addEventListener('click', function() {
+                    const carId = this.dataset.carId;
+                    const url = '{{ route('admin.cars.mark-as-available', ':id') }}'.replace(':id', carId);
+                    const row = this.closest('tr');
+
+                    fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                updateRowToAvailable(row);
+                            }
+                        });
+                });
+            }
+
+            // ربط الأزرار الموجودة عند التحميل
+            document.querySelectorAll('.reserve-btn').forEach(attachReserveHandler);
+            document.querySelectorAll('.cancel-reserve-btn').forEach(attachCancelHandler);
+
+            // بدء المؤقتات للصفوف المحجوزة عند التحميل
+            document.querySelectorAll('tr.reserved-row .cancel-reserve-btn').forEach(btn => {
+                const expiresAt = btn.dataset.expires;
+                if (expiresAt && parseInt(expiresAt) > 0) {
+                    const row = btn.closest('tr');
+                    const carId = btn.dataset.carId;
+                    startTimerForRow(row, carId, parseInt(expiresAt));
+                }
+            });
+        });
+    </script>
+    <script>
+        function updateStats() {
+            fetch('/admin/cars/stats', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(stats => {
+                    document.getElementById('stats-total').textContent = stats.total;
+                    document.getElementById('stats-available').textContent = stats.available;
+                    document.getElementById('stats-sold').textContent = stats.sold;
+                    document.getElementById('stats-reserved').textContent = stats.reserved;
+                });
+        }
     </script>
 @endpush

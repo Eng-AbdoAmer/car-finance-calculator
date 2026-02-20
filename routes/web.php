@@ -309,7 +309,11 @@ Route::prefix('car-images')->name('car-images.')->group(function () {
     //     Route::put('/financial', [SettingController::class, 'updateFinancial'])->name('update.financial');
     //     Route::put('/notifications', [SettingController::class, 'updateNotifications'])->name('update.notifications');
     // });
-
+    Route::post('/cars/{car}/mark-as-reserved', [CarController::class, 'markAsReserved'])->name('cars.mark-as-reserved');
+    Route::post('/cars/{car}/mark-as-available', [CarController::class, 'markAsAvailable'])->name('cars.mark-as-available');
+    Route::post('/cars/{car}/auto-release', [CarController::class, 'autoRelease'])->name('cars.auto-release');
+    Route::get('/cars/stats', [CarController::class, 'getStats'])->name('cars.stats');
+    Route::get('/cars/{id}/print', [CarController::class, 'print'])->name('cars.print');
 
      // ========== إدارة السيارات ==========
        // ===== موارد السيارات =====

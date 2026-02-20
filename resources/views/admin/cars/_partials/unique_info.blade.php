@@ -9,7 +9,7 @@
                     <label for="chassis_number">رقم الهيكل</label>
                     <input type="text" name="chassis_number" id="chassis_number"
                         class="form-control @error('chassis_number') is-invalid @enderror"
-                        value="{{ old('chassis_number', $car->chassis_number ?? '') }}" maxlength="50">
+                        value="{{ old('chassis_number', $car->chassis_number ?? '') }}">
                     @error('chassis_number')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -20,7 +20,7 @@
                     <label for="plate_number">رقم اللوحة</label>
                     <input type="text" name="plate_number" id="plate_number"
                         class="form-control @error('plate_number') is-invalid @enderror"
-                        value="{{ old('plate_number', $car->plate_number ?? '') }}" maxlength="20">
+                        value="{{ old('plate_number', $car->plate_number ?? '') }}">
                     @error('plate_number')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror

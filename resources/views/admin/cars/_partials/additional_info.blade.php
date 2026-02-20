@@ -14,16 +14,16 @@
         </div>
 
         {{-- ملاحظات داخلية --}}
-        <div class="form-group mb-4">
+        {{-- <div class="form-group mb-4">
             <label for="notes">ملاحظات داخلية</label>
             <textarea name="notes" id="notes" rows="2" class="form-control @error('notes') is-invalid @enderror">{{ old('notes', $car->notes ?? '') }}</textarea>
             @error('notes')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
             @enderror
-        </div>
+        </div> --}}
 
         {{-- خيارات إضافية --}}
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-md-3">
                 <div class="form-check form-switch mb-3">
                     <input class="form-check-input" type="checkbox" role="switch" name="is_featured" id="is_featured"
@@ -83,4 +83,4 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}

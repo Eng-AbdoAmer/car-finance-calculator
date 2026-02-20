@@ -19,7 +19,7 @@ class StoreCarRequest extends FormRequest
         return [
             // الأرقام الفريدة
             'chassis_number' => [
-                'nullable', 'string', 'max:50',
+                'nullable', 'string', 'max:100',
                 Rule::unique('cars')->whereNull('deleted_at')
             ],
             'plate_number' => [
@@ -61,7 +61,7 @@ class StoreCarRequest extends FormRequest
             'description'    => 'required|string|min:10',
 
             // التواريخ
-            'entry_date'     => 'required|date',
+            'purchase_date'     => 'required|date',
         ];
     }
 
@@ -80,14 +80,14 @@ class StoreCarRequest extends FormRequest
             'purchase_price.required' => 'سعر الشراء مطلوب.',
             'selling_price.required'  => 'سعر البيع مطلوب.',
             'description.required'    => 'وصف السيارة مطلوب.',
-            'entry_date.required'     => 'تاريخ الدخول للمعرض مطلوب.',
+            'purchase_date.required'  => 'تاريخ الشراء مطلوب.',
         ];
     }
 
     protected function prepareForValidation()
     {
         // تحويل التواريخ من صيغة d/m/Y إلى Y-m-d إذا وردت بهذه الصيغة
-        $dateFields = ['entry_date', 'purchase_date'];
+        $dateFields = ['purchase_date'];
         foreach ($dateFields as $field) {
             if ($this->has($field) && is_string($this->$field) && str_contains($this->$field, '/')) {
                 $this->merge([

@@ -118,7 +118,7 @@
             </div>
         </div>
 
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-md-4">
                 <div class="form-group mb-3">
                     <label for="manufacturing_year">سنة التصنيع</label>
@@ -131,6 +131,6 @@
                     @enderror
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>

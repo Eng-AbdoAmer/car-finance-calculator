@@ -44,7 +44,7 @@
                     @enderror
                 </div>
             </div>
-            <div class="col-md-3">
+            {{-- <div class="col-md-3">
                 <div class="form-group mb-3">
                     <label for="entry_date">تاريخ الدخول للمعرض <span class="text-danger">*</span></label>
                     <input type="date" name="entry_date" id="entry_date"
@@ -54,7 +54,7 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>

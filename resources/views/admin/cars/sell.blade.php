@@ -16,7 +16,6 @@
                 <div class="card-body">
                     <form action="{{ route('admin.cars.process-sale', $car->id) }}" method="POST">
                         @csrf
-                        {{-- لا حاجة لحقل خفي للمستخدم لأننا نستخدم Auth::id() في المتحكم --}}
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
@@ -34,7 +33,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="buyer_name">اسم المشتري <span class="text-danger">*</span></label>
+                                    <label for="buyer_name">اسم المشتري<span class="text-danger">*</span></label>
                                     <input type="text" name="buyer_name" id="buyer_name" class="form-control"
                                         value="{{ old('buyer_name') }}" required>
                                 </div>
