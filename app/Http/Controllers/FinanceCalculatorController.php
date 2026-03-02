@@ -1132,8 +1132,8 @@ private function prepareWhatsAppMessage($financeCalculation)
     
     $message .= "\n─────────────────────\n";
     $message .= "📍 *موقعنا:* خميس مشيط حي المعارض\n";
-    $message .= "🗺️ رابط الخريطة:\n";
-    $message .= "https://maps.app.goo.gl/2MiE1RG5YpMzymEd6";
+    // $message .= "🗺️ رابط الخريطة:\n";
+    // $message .= "https://maps.app.goo.gl/2MiE1RG5YpMzymEd6";
     
     return $message;
 }

@@ -313,9 +313,10 @@ private function prepareWhatsAppMessage($request)
     $message .= "⏳ مدة التمويل: " . $request->duration_months . " شهر\n";
     $message .= "🏷️ الإجمالي الكلي: " . number_format($request->total_amount, 0) . " ر.س\n";
     
-    $message .= "\n─────────────────────\n";
-    $message .= "📍 *موقعنا على الخريطة:*\n";
-    $message .= "https://maps.app.goo.gl/2MiE1RG5YpMzymEd6";
+     $message .= "\n─────────────────────\n";
+     $message .= "📍 *موقعنا:* خميس مشيط حي المعارض\n";
+    // $message .= "📍 *موقعنا على الخريطة:*\n";
+    // $message .= "https://maps.app.goo.gl/2MiE1RG5YpMzymEd6";
     
     return $message;
 }
